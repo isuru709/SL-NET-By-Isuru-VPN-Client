@@ -1,0 +1,228 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\vpnconnectionmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\vpnconnectionmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\sl net.vbproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\sl net.vbproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\mainwindow.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\mainwindow.xaml.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\vmessparser.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\vmessparser.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\xrayupdater.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\xrayupdater.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\vpnsharemanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\vpnsharemanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\vlessparser.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\vlessparser.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\updatechecker.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\updatechecker.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\models.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\models.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\hotspotmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\hotspotmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\configfetcher.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\configfetcher.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|c:\\users\\isuru\\desktop\\python\\visual studio\\vpnclientapp\\vpnclientapp\\adblocklistmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{9B458FA0-6CB2-4EB3-9388-576968748627}|VPNClientApp\\SL NET.vbproj|solutionrelative:vpnclientapp\\adblocklistmanager.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SL NET.vbproj",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\SL NET.vbproj",
+              "RelativeDocumentMoniker": "VPNClientApp\\SL NET.vbproj",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\SL NET.vbproj",
+              "RelativeToolTip": "VPNClientApp\\SL NET.vbproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
+              "WhenOpened": "2025-11-19T07:31:39.62Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "VPNShareManager.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VPNShareManager.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\VPNShareManager.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VPNShareManager.vb",
+              "RelativeToolTip": "VPNClientApp\\VPNShareManager.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:23.969Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VPNConnectionManager.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VPNConnectionManager.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\VPNConnectionManager.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VPNConnectionManager.vb",
+              "RelativeToolTip": "VPNClientApp\\VPNConnectionManager.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:22.63Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "VMESSParser.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VMESSParser.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\VMESSParser.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VMESSParser.vb",
+              "RelativeToolTip": "VPNClientApp\\VMESSParser.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:19.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "VPNClientApp\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\MainWindow.xaml",
+              "RelativeToolTip": "VPNClientApp\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-11-14T10:15:35.638Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MainWindow.xaml.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\MainWindow.xaml.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\MainWindow.xaml.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\MainWindow.xaml.vb",
+              "RelativeToolTip": "VPNClientApp\\MainWindow.xaml.vb",
+              "ViewState": "AgIAABoMAAAAAAAAAAAAABAMAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:09.425Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "XrayUpdater.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\XrayUpdater.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\XrayUpdater.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\XrayUpdater.vb",
+              "RelativeToolTip": "VPNClientApp\\XrayUpdater.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:24.967Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "VLessParser.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VLessParser.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\VLessParser.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\VLessParser.vb",
+              "RelativeToolTip": "VPNClientApp\\VLessParser.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:16.338Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "UpdateChecker.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\UpdateChecker.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\UpdateChecker.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\UpdateChecker.vb",
+              "RelativeToolTip": "VPNClientApp\\UpdateChecker.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:15.193Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Models.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\Models.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\Models.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\Models.vb",
+              "RelativeToolTip": "VPNClientApp\\Models.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:13.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "HotspotManager.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\HotspotManager.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\HotspotManager.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\HotspotManager.vb",
+              "RelativeToolTip": "VPNClientApp\\HotspotManager.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:04.094Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ConfigFetcher.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\ConfigFetcher.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\ConfigFetcher.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\ConfigFetcher.vb",
+              "RelativeToolTip": "VPNClientApp\\ConfigFetcher.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:54:02.5Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AdBlockListManager.vb",
+              "DocumentMoniker": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\AdBlockListManager.vb",
+              "RelativeDocumentMoniker": "VPNClientApp\\AdBlockListManager.vb",
+              "ToolTip": "C:\\Users\\isuru\\Desktop\\Python\\Visual Studio\\VPNClientApp\\VPNClientApp\\AdBlockListManager.vb",
+              "RelativeToolTip": "VPNClientApp\\AdBlockListManager.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-11-17T16:53:55.535Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

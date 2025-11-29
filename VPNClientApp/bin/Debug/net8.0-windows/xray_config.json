@@ -1,0 +1,167 @@
+{
+  "log": {
+    "loglevel": "error"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 1080,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": false,
+        "destOverride": [],
+        "routeOnly": false
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "ip": "127.0.0.1",
+        "userLevel": 0
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 5,
+          "tcpKeepAliveIdle": 10,
+          "tcpCongestion": "bbr",
+          "tcpUserTimeout": 5000,
+          "mark": 255
+        }
+      }
+    },
+    {
+      "tag": "http",
+      "port": 1081,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "sniffing": {
+        "enabled": false,
+        "destOverride": [],
+        "routeOnly": false
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveInterval": 5,
+          "tcpKeepAliveIdle": 10,
+          "tcpCongestion": "bbr",
+          "tcpUserTimeout": 5000,
+          "mark": 255
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "tag": "proxy",
+      "settings": {
+        "vnext": [
+          {
+            "address": "sql.isuruhub.site",
+            "port": 443,
+            "users": [
+              {
+                "id": "01e3a29e-bb13-4854-9ead-f2ffd36540e1",
+                "encryption": "none",
+                "flow": "",
+                "level": 0
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/",
+          "headers": {
+            "Host": "aka.ms"
+          },
+          "maxEarlyData": 4096,
+          "earlyDataHeaderName": "Sec-WebSocket-Protocol"
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "aka.ms",
+          "allowInsecure": true,
+          "fingerprint": "chrome",
+          "alpn": [
+            "h2",
+            "http/1.1"
+          ],
+          "disableSystemRoot": false,
+          "enableSessionResumption": true
+        },
+        "sockopt": {
+          "mark": 255,
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveIdle": 10,
+          "tcpKeepAliveInterval": 5,
+          "tcpCongestion": "bbr",
+          "tcpUserTimeout": 5000,
+          "tcpMaxSeg": 1460,
+          "tproxy": "off"
+        }
+      },
+      "mux": {
+        "enabled": false,
+        "concurrency": -1
+      }
+    },
+    {
+      "protocol": "freedom",
+      "tag": "direct",
+      "settings": {
+        "domainStrategy": "UseIPv4",
+        "userLevel": 0
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tcpFastOpen": true,
+          "tcpNoDelay": true,
+          "tcpKeepAliveIdle": 10,
+          "tcpKeepAliveInterval": 5,
+          "tcpCongestion": "bbr",
+          "tcpUserTimeout": 5000,
+          "tcpMaxSeg": 1460,
+          "mark": 255
+        }
+      }
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "domain:youtube.com",
+          "domain:youtu.be",
+          "domain:ytimg.com",
+          "domain:i.ytimg.com",
+          "domain:yt3.ggpht.com",
+          "domain:googlevideo.com",
+          "domain:youtubei.googleapis.com",
+          "domain:s.youtube.com"
+        ],
+        "outboundTag": "proxy"
+      }
+    ]
+  }
+}
