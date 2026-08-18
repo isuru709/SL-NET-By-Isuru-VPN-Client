@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+Imports System.ComponentModel
 Imports System.Windows.Threading
 Imports System.IO
 Imports System.Net
@@ -12,6 +12,8 @@ Imports System.Diagnostics
 Imports System.Net.Http
 Imports System.Security.Cryptography.X509Certificates
 Imports System.Net.NetworkInformation
+Imports WinForms = System.Windows.Forms
+Imports System.Drawing
 
 Namespace VPNClientApp
     Partial Public Class MainWindow
@@ -27,6 +29,7 @@ Namespace VPNClientApp
         Private _connectionManager As VPNConnectionManager
         Private _vpnShareManager As VPNShareManager
         Private _hotspotManager As HotspotManager
+        Private _globalSpeedLimiter As GlobalSpeedLimiter
         Private _currentConfig As Object
         Private _isConnected As Boolean
         Private _sniCts As CancellationTokenSource
@@ -40,6 +43,8 @@ Namespace VPNClientApp
         Private _adBlockMgr As New AdBlockListManager()
         Private _splitTunnel As New SplitTunnelSettings()
         Private _selectedAppPath As String = Nothing
+        Private _notifyIcon As WinForms.NotifyIcon
+        Private _isExiting As Boolean = False
 
         Public Sub New()
             InitializeComponent()
@@ -48,17 +53,22 @@ Namespace VPNClientApp
             _connectionManager = New VPNConnectionManager()
             _vpnShareManager = New VPNShareManager()
             _hotspotManager = New HotspotManager()
+            _globalSpeedLimiter = New GlobalSpeedLimiter()
 
             AddHandler _updateChecker.ConfigurationUpdated, AddressOf OnConfigurationUpdated
             AddHandler _connectionManager.LogMessage, AddressOf OnConnectionLog
             AddHandler _vpnShareManager.LogMessage, AddressOf OnConnectionLog
             AddHandler _vpnShareManager.StatusChanged, AddressOf OnShareStatusChanged
             AddHandler _hotspotManager.LogMessage, AddressOf OnConnectionLog
+            AddHandler _globalSpeedLimiter.LogMessage, AddressOf OnConnectionLog
 
             ' Add handler for SSH key authentication checkbox
             AddHandler UseSSHKeyCheck.Checked, Sub(s, e) SSHKeyPanel.Visibility = Visibility.Visible
             AddHandler UseSSHKeyCheck.Unchecked, Sub(s, e) SSHKeyPanel.Visibility = Visibility.Collapsed
             AddHandler BrowseSSHKeyButton.Click, AddressOf BrowseSSHKeyButton_Click
+
+            ' Initialize system tray icon
+            InitializeSystemTray()
 
             AddHandler Me.Loaded, Sub(s, e)
                                       ' Initialize UI on startup
@@ -79,87 +89,247 @@ Namespace VPNClientApp
         End Sub
 
         ''' <summary>
-        ''' Handle window closing event to disable manual proxy settings
+        ''' Initialize system tray icon
         ''' </summary>
-        Private Sub Window_Closing(sender As Object, e As ComponentModel.CancelEventArgs)
+        Private Sub InitializeSystemTray()
             Try
-                AddLog("Application closing - restoring proxy settings...")
+                ' Create the NotifyIcon
+                _notifyIcon = New WinForms.NotifyIcon()
                 
-                ' Disconnect VPN if connected
+                ' Try multiple paths to load the icon
+                Dim iconLoaded As Boolean = False
+                Dim iconPaths As String() = {
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Image_fx (14)-modified.ico"),
+                    Path.Combine(Environment.CurrentDirectory, "Image_fx (14)-modified.ico"),
+                    Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "Image_fx (14)-modified.ico")
+                }
+                
+                For Each iconPath In iconPaths
+                    If File.Exists(iconPath) Then
+                        Try
+                            _notifyIcon.Icon = New Icon(iconPath)
+                            iconLoaded = True
+                            Exit For
+                        Catch
+                            ' Try next path
+                        End Try
+                    End If
+                Next
+                
+                ' Fallback to embedded resource or system icon
+                If Not iconLoaded Then
+                    Try
+                        ' Try to load from application resources
+                        Dim resourceStream = Application.GetResourceStream(New Uri("pack://application:,,,/Image_fx (14)-modified.ico"))
+                        If resourceStream IsNot Nothing Then
+                            _notifyIcon.Icon = New Icon(resourceStream.Stream)
+                            iconLoaded = True
+                        End If
+                    Catch
+                        ' Use system default icon as final fallback
+                        _notifyIcon.Icon = SystemIcons.Application
+                    End Try
+                End If
+                
+                _notifyIcon.Text = "SL NET VPN Client - Disconnected"
+                _notifyIcon.Visible = False
+                
+                ' Create context menu for tray icon
+                CreateTrayContextMenu()
+                
+                ' Double-click to restore window
+                AddHandler _notifyIcon.DoubleClick, Sub(s, e)
+                                                        Me.Show()
+                                                        Me.WindowState = WindowState.Normal
+                                                        Me.Activate()
+                                                        _notifyIcon.Visible = False
+                                                    End Sub
+                
+            Catch ex As Exception
+                AddLog($"Failed to initialize system tray: {ex.Message}", True)
+            End Try
+        End Sub
+
+        ''' <summary>
+        ''' Create or update the tray context menu
+        ''' </summary>
+        Private Sub CreateTrayContextMenu()
+            Dim contextMenu As New WinForms.ContextMenuStrip()
+            
+            ' Show Window item
+            Dim showItem As New WinForms.ToolStripMenuItem("Show Window")
+            AddHandler showItem.Click, Sub(s, e)
+                                           Dispatcher.Invoke(Sub()
+                                                                 Me.Show()
+                                                                 Me.WindowState = WindowState.Normal
+                                                                 Me.Activate()
+                                                                 _notifyIcon.Visible = False
+                                                             End Sub)
+                                       End Sub
+            contextMenu.Items.Add(showItem)
+            
+            contextMenu.Items.Add(New WinForms.ToolStripSeparator())
+            
+            ' Connect/Disconnect items
+            If _isConnected Then
+                Dim disconnectItem As New WinForms.ToolStripMenuItem("Disconnect VPN")
+                disconnectItem.Font = New Font(disconnectItem.Font, System.Drawing.FontStyle.Bold)
+                AddHandler disconnectItem.Click, Sub(s, e)
+                                                     Dispatcher.Invoke(Sub()
+                                                                           Try
+                                                                               DisconnectButton_Click(Nothing, Nothing)
+                                                                               UpdateTrayIcon()
+                                                                           Catch ex As Exception
+                                                                               AddLog($"Tray disconnect error: {ex.Message}", True)
+                                                                           End Try
+                                                                       End Sub)
+                                                 End Sub
+                contextMenu.Items.Add(disconnectItem)
+            Else
+                Dim connectItem As New WinForms.ToolStripMenuItem("Connect VPN")
+                connectItem.Font = New Font(connectItem.Font, System.Drawing.FontStyle.Bold)
+                AddHandler connectItem.Click, Sub(s, e)
+                                                 Dispatcher.Invoke(Sub()
+                                                                       Try
+                                                                           ConnectButton_Click(Nothing, Nothing)
+                                                                           UpdateTrayIcon()
+                                                                       Catch ex As Exception
+                                                                           AddLog($"Tray connect error: {ex.Message}", True)
+                                                                       End Try
+                                                                   End Sub)
+                                             End Sub
+                contextMenu.Items.Add(connectItem)
+            End If
+            
+            contextMenu.Items.Add(New WinForms.ToolStripSeparator())
+            
+            ' Exit item
+            Dim exitItem As New WinForms.ToolStripMenuItem("Exit")
+            AddHandler exitItem.Click, Sub(s, e)
+                                           Dispatcher.Invoke(Sub()
+                                                                 _isExiting = True
+                                                                 Application.Current.Shutdown()
+                                                             End Sub)
+                                       End Sub
+            contextMenu.Items.Add(exitItem)
+            
+            _notifyIcon.ContextMenuStrip = contextMenu
+        End Sub
+
+        ''' <summary>
+        ''' Update tray icon status and menu
+        ''' </summary>
+        Private Sub UpdateTrayIcon()
+            Try
+                If _notifyIcon Is Nothing Then Return
+                
+                ' Update tooltip text
                 If _isConnected Then
-                    _connectionManager?.Disconnect()
+                    _notifyIcon.Text = "SL NET VPN Client - Connected"
+                Else
+                    _notifyIcon.Text = "SL NET VPN Client - Disconnected"
+                End If
+                
+                ' Recreate menu to update connect/disconnect options
+                CreateTrayContextMenu()
+            Catch ex As Exception
+                AddLog($"Failed to update tray icon: {ex.Message}", True)
+            End Try
+        End Sub
+
+        ''' <summary>
+        ''' Handle window closing event - ask user to minimize or close when VPN is connected
+        ''' </summary>
+        Private Sub Window_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs)
+            Try
+                ' If forcing exit from tray menu, skip dialog
+                If _isExiting Then
+                    PerformFullShutdown()
+                    Return
                 End If
 
-                ' Disable system proxy to restore original settings
-                Dim registryKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-                Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey, True)
-                    If key IsNot Nothing Then
-                        ' Restore previous proxy settings if they were backed up
-                        If _previousProxySettings IsNot Nothing Then
-                            ' Restore ProxyEnable
-                            If _previousProxySettings.ContainsKey("ProxyEnable") Then
-                                Dim proxyEnable = CInt(_previousProxySettings("ProxyEnable"))
-                                key.SetValue("ProxyEnable", proxyEnable, Microsoft.Win32.RegistryValueKind.DWord)
-                            Else
-                                key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord)
-                            End If
+                ' If VPN is connected, ask user what to do
+                If _isConnected Then
+                    Dim result = MessageBox.Show(
+                        "VPN is still connected. What would you like to do?" & vbCrLf & vbCrLf &
+                        "• Yes = Minimize to system tray (VPN stays connected)" & vbCrLf &
+                        "• No = Disconnect VPN and close application" & vbCrLf &
+                        "• Cancel = Go back",
+                        "SL NET - Close or Minimize?",
+                        MessageBoxButton.YesNoCancel,
+                        MessageBoxImage.Question)
 
-                            ' Restore ProxyServer
-                            If _previousProxySettings.ContainsKey("ProxyServer") Then
-                                Dim proxyServer = _previousProxySettings("ProxyServer").ToString()
-                                If Not String.IsNullOrEmpty(proxyServer) Then
-                                    key.SetValue("ProxyServer", proxyServer, Microsoft.Win32.RegistryValueKind.String)
-                                Else
-                                    key.DeleteValue("ProxyServer", False)
-                                End If
-                            Else
-                                key.DeleteValue("ProxyServer", False)
-                            End If
+                    Select Case result
+                        Case MessageBoxResult.Yes
+                            ' Minimize to tray
+                            e.Cancel = True
+                            Me.Hide()
+                            _notifyIcon.Visible = True
+                            _notifyIcon.ShowBalloonTip(3000, "SL NET", "VPN is still connected. Running in system tray.", WinForms.ToolTipIcon.Info)
+                            Return
 
-                            ' Restore ProxyOverride
-                            If _previousProxySettings.ContainsKey("ProxyOverride") Then
-                                Dim proxyOverride = _previousProxySettings("ProxyOverride").ToString()
-                                If Not String.IsNullOrEmpty(proxyOverride) Then
-                                    key.SetValue("ProxyOverride", proxyOverride, Microsoft.Win32.RegistryValueKind.String)
-                                Else
-                                    key.DeleteValue("ProxyOverride", False)
-                                End If
-                            Else
-                                key.DeleteValue("ProxyOverride", False)
-                            End If
+                        Case MessageBoxResult.No
+                            ' Disconnect and close
+                            PerformFullShutdown()
+                            Return
 
-                            ' Restore AutoConfigURL
-                            If _previousProxySettings.ContainsKey("AutoConfigURL") Then
-                                Dim autoConfigURL = _previousProxySettings("AutoConfigURL").ToString()
-                                If Not String.IsNullOrEmpty(autoConfigURL) Then
-                                    key.SetValue("AutoConfigURL", autoConfigURL, Microsoft.Win32.RegistryValueKind.String)
-                                Else
-                                    key.DeleteValue("AutoConfigURL", False)
-                                End If
-                            Else
-                                key.DeleteValue("AutoConfigURL", False)
-                            End If
+                        Case MessageBoxResult.Cancel
+                            ' Go back
+                            e.Cancel = True
+                            Return
+                    End Select
+                End If
 
-                            AddLog("Previous proxy settings restored")
-                        Else
-                            ' No previous settings, just disable proxy
-                            key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord)
-                            key.DeleteValue("ProxyServer", False)
-                            key.DeleteValue("ProxyOverride", False)
-                            key.DeleteValue("AutoConfigURL", False)
-                            AddLog("Proxy disabled")
-                        End If
-                    End If
-                End Using
-
-                ' Notify Windows of the proxy change
-                Const INTERNET_OPTION_SETTINGS_CHANGED As Integer = 39
-                Const INTERNET_OPTION_REFRESH As Integer = 37
-                InternetSetOption(IntPtr.Zero, INTERNET_OPTION_SETTINGS_CHANGED, IntPtr.Zero, 0)
-                InternetSetOption(IntPtr.Zero, INTERNET_OPTION_REFRESH, IntPtr.Zero, 0)
+                ' Not connected - just close
+                PerformFullShutdown()
 
             Catch ex As Exception
                 AddLog($"Error during application close: {ex.Message}", True)
+            End Try
+        End Sub
+
+        ''' <summary>
+        ''' Full shutdown: disconnect VPN, cleanup TUN adapter, restore proxy, dispose tray
+        ''' </summary>
+        Private Sub PerformFullShutdown()
+            Try
+                ' Disconnect VPN if connected (handles TUN cleanup, proxy restore, process kill)
+                If _isConnected Then
+                    Try
+                        _connectionManager?.Disconnect()
+                    Catch
+                    End Try
+                    _isConnected = False
+                End If
+
+                ' Cleanup TUN adapter (delete the SLNET virtual adapter)
+                Try
+                    _connectionManager?.CleanupAdapter()
+                Catch
+                End Try
+
+                ' Always force proxy to clean state on shutdown
+                ' This guarantees "Use a proxy server" is OFF and "Auto detect" is ON
+                Try
+                    _connectionManager?.ForceCleanProxyState()
+                Catch
+                End Try
+
+                ' Remove global speed limit if applied
+                If _globalSpeedLimiter IsNot Nothing AndAlso _globalSpeedLimiter.IsApplied Then
+                    Try
+                        _globalSpeedLimiter.RemoveLimit()
+                    Catch
+                    End Try
+                End If
+
+                ' Cleanup tray icon
+                If _notifyIcon IsNot Nothing Then
+                    _notifyIcon.Visible = False
+                    _notifyIcon.Dispose()
+                End If
+            Catch ex As Exception
+                AddLog($"Shutdown cleanup error: {ex.Message}", True)
             End Try
         End Sub
         Private Async Sub UpdateXrayButton_Click(sender As Object, e As RoutedEventArgs)
@@ -429,19 +599,22 @@ Namespace VPNClientApp
                 _blocker.UseOisdFull = If(UseOisdFullCheck IsNot Nothing, UseOisdFullCheck.IsChecked.GetValueOrDefault(False), False)
                 UpdateCategoriesSummary()
 
-                ' If Ads blocking is enabled, load any existing merged domains into routing
+                ' If Ads blocking is enabled, load external domain lists for enhanced blocking
                 If _blocker.AdsEnabled Then
                     Dim external = _adBlockMgr.LoadMergedDomains()
                     If external IsNot Nothing AndAlso external.Count > 0 Then
                         _connectionManager.UpdateExternalBlockDomains(external)
-                        AddLog($"Loaded {external.Count} domains from merged list for Ads blocking")
+                        AddLog($"✅ Loaded {external.Count} domains from external lists for enhanced ad blocking")
                     Else
-                        AddLog("No merged adblock list found. Click 'Update Lists' to download EasyList, EasyPrivacy, Peter Lowe, and uBlock filters.")
+                        _connectionManager.UpdateExternalBlockDomains(New List(Of String))
+                        AddLog("⚠️ Using basic ad blocking (hardcoded list). Click 'Update Lists' to download external lists (EasyList, EasyPrivacy, etc.) for better blocking coverage.")
                     End If
                 Else
-                    ' If not using Ads list, clear external domains to avoid stale blocks
+                    ' If ads blocking not enabled, clear external domains to avoid stale blocks
                     _connectionManager.UpdateExternalBlockDomains(New List(Of String))
                 End If
+
+                _connectionManager.UpdateBlockerSettings(_blocker)
                 Await ApplyBlockerRulesAsync()
             Catch ex As Exception
                 AddLog($"Apply button error: {ex.Message}", True)
@@ -769,14 +942,51 @@ Namespace VPNClientApp
             End Try
         End Sub
 
+        Private _logLineCount As Integer = 0
+        Private _lastLogMessage As String = ""
+        Private _logDupeCount As Integer = 0
+        Private Const MAX_LOG_LINES As Integer = 200
+        Private Const TRIM_TO_LINES As Integer = 100
+
         Private Sub AddLog(message As String, Optional isError As Boolean = False)
             Try
+                ' Skip exact duplicate consecutive messages (batch them)
+                If message = _lastLogMessage Then
+                    _logDupeCount += 1
+                    If _logDupeCount < 5 Then Return ' suppress first 4 dupes silently
+                    If _logDupeCount = 5 Then
+                        message = $"(repeated {_logDupeCount}x) {message}"
+                    Else
+                        Return ' suppress further dupes
+                    End If
+                Else
+                    _logDupeCount = 0
+                    _lastLogMessage = message
+                End If
+
                 Dispatcher.Invoke(Sub()
                                       If LogTextBox Is Nothing Then Return
+
+                                      ' Auto-trim when exceeding max lines
+                                      _logLineCount += 1
+                                      If _logLineCount > MAX_LOG_LINES Then
+                                          Dim text = LogTextBox.Text
+                                          Dim lines = text.Split({Environment.NewLine}, StringSplitOptions.None)
+                                          If lines.Length > TRIM_TO_LINES Then
+                                              ' Keep only the last TRIM_TO_LINES lines
+                                              LogTextBox.Text = String.Join(Environment.NewLine, lines.Skip(lines.Length - TRIM_TO_LINES))
+                                              _logLineCount = TRIM_TO_LINES
+                                          End If
+                                      End If
+
                                       Dim timestamp = DateTime.Now.ToString("HH:mm:ss")
                                       Dim logEntry = $"[{timestamp}] {message}{Environment.NewLine}"
                                       LogTextBox.AppendText(logEntry)
-                                      LogTextBox.ScrollToEnd()
+
+                                      ' Only scroll every 10 lines to reduce UI overhead
+                                      If _logLineCount Mod 10 = 0 Then
+                                          LogTextBox.ScrollToEnd()
+                                      End If
                                   End Sub)
             Catch
             End Try
@@ -862,6 +1072,9 @@ Namespace VPNClientApp
 
         Private Sub ClearLogsButton_Click(sender As Object, e As RoutedEventArgs)
             LogTextBox.Clear()
+            _logLineCount = 0
+            _logDupeCount = 0
+            _lastLogMessage = ""
             AddLog("Logs cleared")
         End Sub
 
@@ -1198,7 +1411,7 @@ Namespace VPNClientApp
                                       Dim redirectSupported = SniSpeedText.Text.Contains("redirect", StringComparison.OrdinalIgnoreCase)
                                       SniBadgeRedirect.Background = If(redirectSupported, green, amber)
                                       SniBadgeSpeed.Background = If(okSpeed, green, amber)
-                                      SniOverallBorder.Background = If(okTls AndAlso okPing, New Media.SolidColorBrush(Media.Color.FromRgb(224, 247, 250)), New Media.SolidColorBrush(Media.Color.FromRgb(252, 235, 234)))
+                                      SniOverallBorder.Background = If(okTls AndAlso okPing, New Media.SolidColorBrush(Media.Color.FromRgb(&H0D, &H47, &H3A)), New Media.SolidColorBrush(Media.Color.FromRgb(&H4A, &H14, &H14)))
                                   End Sub)
 
                 ' Inline SNI status
@@ -1364,7 +1577,7 @@ Namespace VPNClientApp
                                       SetBadge(SpeedBadgeBrowsing, browsing)
                                       overall = If(gaming = "Good" AndAlso streaming.Contains("4K") AndAlso browsing = "Fast", "Excellent for all activities.", If(streaming.Contains("HD") AndAlso browsing <> "Slow", "Good general performance; HD streaming OK.", "Basic connectivity; limited for heavy use."))
                                       SpeedOverallText.Text = overall
-                                      SpeedOverallBorder.Background = If(overall.StartsWith("Excellent"), New Media.SolidColorBrush(Media.Color.FromRgb(224, 247, 250)), If(overall.StartsWith("Good"), New Media.SolidColorBrush(Media.Color.FromRgb(255, 249, 196)), New Media.SolidColorBrush(Media.Color.FromRgb(252, 235, 234))))
+                                      SpeedOverallBorder.Background = If(overall.StartsWith("Excellent"), New Media.SolidColorBrush(Media.Color.FromRgb(&H0D, &H47, &H3A)), If(overall.StartsWith("Good"), New Media.SolidColorBrush(Media.Color.FromRgb(&H33, &H3D, &H0D)), New Media.SolidColorBrush(Media.Color.FromRgb(&H4A, &H14, &H14))))
                                   End Sub)
 
             Catch ex As Exception
@@ -1379,6 +1592,70 @@ Namespace VPNClientApp
             Try
                 _speedCts?.Cancel()
             Catch
+            End Try
+        End Sub
+
+        ''' <summary>
+        ''' Apply global speed limit handler
+        ''' </summary>
+        Private Sub ApplyGlobalSpeedLimitButton_Click(sender As Object, e As RoutedEventArgs)
+            Try
+                ' Parse limits
+                Dim downloadLimitKBps As Integer = 0
+                Dim uploadLimitKBps As Integer = 0
+                Integer.TryParse(GlobalDownloadLimitTextBox.Text.Trim(), downloadLimitKBps)
+                Integer.TryParse(GlobalUploadLimitTextBox.Text.Trim(), uploadLimitKBps)
+                downloadLimitKBps = Math.Max(0, downloadLimitKBps)
+                uploadLimitKBps = Math.Max(0, uploadLimitKBps)
+
+                If downloadLimitKBps <= 0 AndAlso uploadLimitKBps <= 0 Then
+                    MessageBox.Show("Please enter at least one speed limit value greater than 0.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning)
+                    Return
+                End If
+
+                ' Apply limit (requires admin rights)
+                Dim result = MessageBox.Show(
+                    "Applying global speed limit requires administrator privileges. " & vbCrLf & vbCrLf &
+                    $"Download: {If(downloadLimitKBps > 0, downloadLimitKBps.ToString() & " KB/s", "unlimited")}" & vbCrLf &
+                    $"Upload: {If(uploadLimitKBps > 0, uploadLimitKBps.ToString() & " KB/s", "unlimited")}" & vbCrLf & vbCrLf &
+                    "Note: Upload limiting uses Windows QoS (effective). Download limiting uses QoS ACK throttling (limited effectiveness)." & vbCrLf & vbCrLf &
+                    "Continue?",
+                    "Confirm Global Speed Limit",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question)
+
+                If result <> MessageBoxResult.Yes Then
+                    Return
+                End If
+
+                If _globalSpeedLimiter.ApplyLimit(downloadLimitKBps, uploadLimitKBps) Then
+                    GlobalSpeedLimitStatusText.Text = $"Global Limit: DL={If(downloadLimitKBps > 0, downloadLimitKBps.ToString() & " KB/s", "∞")}, UL={If(uploadLimitKBps > 0, uploadLimitKBps.ToString() & " KB/s", "∞")}"
+                    GlobalSpeedLimitStatusText.Foreground = New Media.SolidColorBrush(Media.Color.FromRgb(40, 167, 69))
+                    MessageBox.Show("Global speed limit applied successfully using Windows QoS policies." & vbCrLf & vbCrLf & "Upload limiting is effective. Download limiting may have limited effectiveness (best used with VPN sharing).", "Success", MessageBoxButton.OK, MessageBoxImage.Information)
+                Else
+                    GlobalSpeedLimitStatusText.Text = "Global Limit: Failed to Apply"
+                    GlobalSpeedLimitStatusText.Foreground = New Media.SolidColorBrush(Media.Color.FromRgb(220, 53, 69))
+                    MessageBox.Show("Failed to apply global speed limit. Make sure the application is running with administrator privileges.", "Error", MessageBoxButton.OK, MessageBoxImage.Error)
+                End If
+
+            Catch ex As Exception
+                AddLog($"Global speed limit error: {ex.Message}", True)
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error)
+            End Try
+        End Sub
+
+        Private Sub RemoveGlobalSpeedLimitButton_Click(sender As Object, e As RoutedEventArgs)
+            Try
+                If _globalSpeedLimiter.RemoveLimit() Then
+                    GlobalSpeedLimitStatusText.Text = "Global Limit: Not Applied"
+                    GlobalSpeedLimitStatusText.Foreground = New Media.SolidColorBrush(Media.Colors.Gray)
+                    MessageBox.Show("Global speed limit removed successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information)
+                Else
+                    MessageBox.Show("Failed to remove global speed limit.", "Error", MessageBoxButton.OK, MessageBoxImage.Error)
+                End If
+            Catch ex As Exception
+                AddLog($"Remove global speed limit error: {ex.Message}", True)
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End Sub
 
@@ -1501,7 +1778,7 @@ Namespace VPNClientApp
             End Try
         End Sub
 
-        Private Sub OnWindowClosing(sender As Object, e As ComponentModel.CancelEventArgs)
+        Private Sub OnWindowClosing(sender As Object, e As System.ComponentModel.CancelEventArgs)
             Try
                 ' Ensure all resources are released and system settings restored
                 AddLog("Cleaning up before exit...")
@@ -1847,6 +2124,7 @@ Namespace VPNClientApp
                     End If
 
                     Dim label As String = $"{host}:{portVal} - {user}"
+                    Dim useTLS = UseSSHTLSCheck.IsChecked.GetValueOrDefault(True)
                     Dim sshConfig As New SSHTLSConfig With {
                         .Host = host,
                         .Port = portVal,
@@ -1858,7 +2136,7 @@ Namespace VPNClientApp
                         .SNI = sni,
                         .Tag = label,
                         .LocalPort = 0,
-                        .UseTLS = False,
+                        .UseTLS = useTLS,
                         .IsOnlineConfig = False
                     }
 
@@ -1935,6 +2213,7 @@ Namespace VPNClientApp
                     ConnectButton.Content = "✓ Connected"
                     DisconnectButton.IsEnabled = True
                     UpdateConfigButton.IsEnabled = True
+                    UpdateTrayIcon()
                     ' Allow starting Share VPN only when base VPN is connected
                     If StartShareButton IsNot Nothing Then StartShareButton.IsEnabled = True
                     If StopShareButton IsNot Nothing Then StopShareButton.IsEnabled = False
@@ -1981,6 +2260,7 @@ Namespace VPNClientApp
                 DisconnectButton.IsEnabled = False
                 ServerConfigComboBox.IsEnabled = True
                 UpdateConfigButton.IsEnabled = True
+                UpdateTrayIcon()
                 If StartShareButton IsNot Nothing Then StartShareButton.IsEnabled = False
                 If StopShareButton IsNot Nothing Then StopShareButton.IsEnabled = False
                 AddLog("✓ Disconnected successfully")
@@ -2066,6 +2346,7 @@ Namespace VPNClientApp
                             _connectionManager.Disconnect()
                             _isConnected = False
                             UpdateStatusUI(False, "N/A", "Disconnected for update")
+                            UpdateTrayIcon()
                             Await Task.Delay(800)
 
                             Dim result2 As Boolean = False
@@ -2081,6 +2362,7 @@ Namespace VPNClientApp
                                 UpdateStatusUI(True, protocol, "Reconnected with updated config")
                                 ConnectButton.Content = "✓ Connected"
                                 DisconnectButton.IsEnabled = True
+                                UpdateTrayIcon()
                                 AddLog("✓ Reconnected successfully with updated configuration")
 
                                 ' Restore Share VPN if it was running before update, using new local ports
@@ -2791,7 +3073,7 @@ Namespace VPNClientApp
                 StopShareButton.IsEnabled = False
                 StartShareButton.Content = "⏳ Starting..."
 
-                Dim started = Await _vpnShareManager.StartAsync(listenHost, publicHttpPort, publicSocksPort, shareHttp, shareSocks, localHttp, localSocks)
+                Dim started = Await _vpnShareManager.StartAsync(listenHost, publicHttpPort, publicSocksPort, shareHttp, shareSocks, localHttp, localSocks, 0, 0)
                 If started Then
                     ' Attempt to auto-start hotspot (best-effort)
                     Dim hotspotStarted = False
@@ -2848,6 +3130,9 @@ Namespace VPNClientApp
             End Try
         End Sub
 
+        ''' <summary>
+        ''' Apply speed limit for shared VPN connections
+        ''' </summary>
         ''' <summary>
         ''' Add URL to share filter list
         ''' </summary>
@@ -3081,15 +3366,12 @@ Namespace VPNClientApp
                                       Dim registryKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
                                       Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey, False)
                                           If key Is Nothing Then
-                                              ' Default to System mode if can't read registry
                                               SetProxyModeComboBox("System")
-                                              AddLog("Proxy mode set to default: System")
                                               Return
                                           End If
 
                                           Dim proxyEnable As Integer = 0
                                           Dim proxyServer As String = ""
-                                          Dim autoConfigURL As String = ""
 
                                           Try
                                               proxyEnable = CInt(key.GetValue("ProxyEnable", 0))
@@ -3101,48 +3383,20 @@ Namespace VPNClientApp
                                           Catch
                                           End Try
 
-                                          Try
-                                              autoConfigURL = key.GetValue("AutoConfigURL", "").ToString()
-                                          Catch
-                                          End Try
-
-                                          ' Determine current mode
-                                          If Not String.IsNullOrEmpty(autoConfigURL) Then
-                                              ' PAC script is configured
-                                              SetProxyModeComboBox("PAC")
-                                              AddLog($"Detected current proxy mode: PAC Script ({autoConfigURL})")
-                                          ElseIf proxyEnable = 1 AndAlso Not String.IsNullOrEmpty(proxyServer) Then
-                                              ' Manual proxy is enabled
+                                          ' Detect Global (multi-protocol) vs System (single) proxy
+                                          If proxyEnable = 1 AndAlso Not String.IsNullOrEmpty(proxyServer) Then
                                               If proxyServer.Contains(";") Then
-                                                  ' Multiple protocols configured - likely Global or Manual
-                                                  Dim proxyOverride As String = ""
-                                                  Try
-                                                      proxyOverride = key.GetValue("ProxyOverride", "").ToString()
-                                                  Catch
-                                                  End Try
-
-                                                  If String.IsNullOrEmpty(proxyOverride) Then
-                                                      SetProxyModeComboBox("Global")
-                                                      AddLog($"Detected current proxy mode: Global ({proxyServer})")
-                                                  Else
-                                                      SetProxyModeComboBox("Manual")
-                                                      AddLog($"Detected current proxy mode: Manual ({proxyServer})")
-                                                  End If
+                                                  SetProxyModeComboBox("Global")
                                               Else
-                                                  ' Single proxy - likely System mode
                                                   SetProxyModeComboBox("System")
-                                                  AddLog($"Detected current proxy mode: System ({proxyServer})")
                                               End If
                                           Else
-                                              ' No proxy configured
-                                              SetProxyModeComboBox("None")
-                                              AddLog("Detected current proxy mode: No Proxy")
+                                              ' Default to System
+                                              SetProxyModeComboBox("System")
                                           End If
                                       End Using
                                   End Sub)
             Catch ex As Exception
-                AddLog($"Failed to detect current proxy mode: {ex.Message}", True)
-                ' Default to System on error
                 Dispatcher.Invoke(Sub() SetProxyModeComboBox("System"))
             End Try
         End Sub

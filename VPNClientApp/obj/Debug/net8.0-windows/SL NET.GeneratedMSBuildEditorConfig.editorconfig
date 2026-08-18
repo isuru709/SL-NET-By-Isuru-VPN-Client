@@ -1,5 +1,7 @@
 is_global = true
 build_property.TargetFramework = net8.0-windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 7.0
 build_property.UsingMicrosoftNETSdkWeb = 
 build_property.ProjectTypeGuids = 
@@ -8,7 +10,7 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = VPNClientApp
-build_property.ProjectDir = C:\Users\isuru\Desktop\Python\Visual Studio\VPNClientApp\VPNClientApp\
+build_property.ProjectDir = C:\Users\isuru\Desktop\Python\GIT\SL-NET-By-Isuru-VPN-Client\VPNClientApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

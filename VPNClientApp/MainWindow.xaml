@@ -1,50 +1,57 @@
-﻿<Window x:Class="VPNClientApp.MainWindow"
+<Window x:Class="VPNClientApp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="SL NET - isuruhub.site" Height="750" Width="1200" 
-    Background="#F8F9FA" WindowStartupLocation="CenterScreen"
+    Background="#0A0E1A" WindowStartupLocation="CenterScreen"
     ResizeMode="CanResizeWithGrip" MinHeight="700" MinWidth="1000" Icon="/Image_fx (14)-modified.png"
     UseLayoutRounding="True" TextOptions.TextFormattingMode="Display"
     Closing="Window_Closing">
 
     <Window.Resources>
-        <!-- Modern Color Resources -->
-        <SolidColorBrush x:Key="PrimaryBrush" Color="#0078D4"/>
-        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#106EBE"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#107C10"/>
-        <SolidColorBrush x:Key="SuccessHoverBrush" Color="#0E6A0D"/>
-        <SolidColorBrush x:Key="DangerBrush" Color="#D13438"/>
-        <SolidColorBrush x:Key="DangerHoverBrush" Color="#B42B2F"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#00B7C3"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#FFB900"/>
-        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="#E1E1E1"/>
-        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#323130"/>
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#605E5C"/>
+        <!-- Dark Premium Color Resources -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#6C63FF"/>
+        <SolidColorBrush x:Key="PrimaryHoverBrush" Color="#7B73FF"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#00E676"/>
+        <SolidColorBrush x:Key="SuccessHoverBrush" Color="#33EB91"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#FF5252"/>
+        <SolidColorBrush x:Key="DangerHoverBrush" Color="#FF7676"/>
+        <SolidColorBrush x:Key="InfoBrush" Color="#00D9FF"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFB300"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#141929"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#2A3050"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E8EAED"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#8B92A5"/>
         
-        <!-- Modern Card Style -->
+        <!-- Dark Glassmorphic Card Style -->
         <Style x:Key="CardPanel" TargetType="Border">
             <Setter Property="Background">
                 <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#FFFFFF" Offset="0"/>
-                        <GradientStop Color="#FEFEFE" Offset="1"/>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1A1F35" Offset="0"/>
+                        <GradientStop Color="#141929" Offset="1"/>
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderBrush">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#2A3050" Offset="0"/>
+                        <GradientStop Color="#1E2440" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="CornerRadius" Value="16"/>
             <Setter Property="Padding" Value="24"/>
             <Setter Property="Margin" Value="0,0,0,16"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#000000" Opacity="0.08" ShadowDepth="4" BlurRadius="16" Direction="270"/>
+                    <DropShadowEffect Color="#6C63FF" Opacity="0.15" ShadowDepth="0" BlurRadius="24" Direction="270"/>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- Modern Button -->
+        <!-- Neon Glow Button -->
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -60,7 +67,7 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" 
                             Background="{TemplateBinding Background}" 
-                            CornerRadius="6" 
+                            CornerRadius="8" 
                             Padding="{TemplateBinding Padding}">
                             <Border.Effect>
                                 <DropShadowEffect x:Name="glowEffect" 
@@ -79,23 +86,19 @@
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetName="glowEffect" 
                                                            Storyboard.TargetProperty="BlurRadius" 
-                                                           To="25" 
-                                                           Duration="0:0:0.2"/>
+                                                           To="30" 
+                                                           Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="glowEffect" 
                                                            Storyboard.TargetProperty="Opacity" 
-                                                           To="0.8" 
-                                                           Duration="0:0:0.2"/>
+                                                           To="0.7" 
+                                                           Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="border" 
                                                            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" 
-                                                           To="1.05" 
+                                                           To="1.04" 
                                                            Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="border" 
                                                            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" 
-                                                           To="1.05" 
-                                                           Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="border" 
-                                                           Storyboard.TargetProperty="Opacity" 
-                                                           To="0.92" 
+                                                           To="1.04" 
                                                            Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
@@ -106,11 +109,11 @@
                                             <DoubleAnimation Storyboard.TargetName="glowEffect" 
                                                            Storyboard.TargetProperty="BlurRadius" 
                                                            To="0" 
-                                                           Duration="0:0:0.2"/>
+                                                           Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="glowEffect" 
                                                            Storyboard.TargetProperty="Opacity" 
                                                            To="0" 
-                                                           Duration="0:0:0.2"/>
+                                                           Duration="0:0:0.25"/>
                                             <DoubleAnimation Storyboard.TargetName="border" 
                                                            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" 
                                                            To="1" 
@@ -119,19 +122,15 @@
                                                            Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" 
                                                            To="1" 
                                                            Duration="0:0:0.2"/>
-                                            <DoubleAnimation Storyboard.TargetName="border" 
-                                                           Storyboard.TargetProperty="Opacity" 
-                                                           To="1" 
-                                                           Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Opacity" Value="0.75"/>
+                                <Setter TargetName="border" Property="Opacity" Value="0.8"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.5"/>
+                                <Setter Property="Opacity" Value="0.4"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -148,38 +147,48 @@
                     <Setter Property="Background" Value="{StaticResource PrimaryHoverBrush}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Background" Value="#CCCCCC"/>
-                    <Setter Property="Foreground" Value="#999999"/>
+                    <Setter Property="Background" Value="#2A3050"/>
+                    <Setter Property="Foreground" Value="#555E78"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <!-- Modern TextBox -->
+        <!-- Dark Modern TextBox -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="Padding" Value="12,10"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="#0F1323"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="CaretBrush" Value="#E8EAED"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="border"
-                                Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
-                                CornerRadius="6">
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="4,0"/>
-                        </Border>
+                        <Grid>
+                            <Border x:Name="glowBorder" CornerRadius="10" Margin="-2"
+                                    Background="Transparent" Opacity="0">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#6C63FF" ShadowDepth="0" BlurRadius="16" Opacity="0.6"/>
+                                </Border.Effect>
+                            </Border>
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                    CornerRadius="8">
+                                <ScrollViewer x:Name="PART_ContentHost" Margin="4,0"/>
+                            </Border>
+                        </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
                                 <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="glowBorder" Property="Opacity" Value="1"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#B3B3B3"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3D4670"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -187,31 +196,402 @@
             </Setter>
         </Style>
 
-        <!-- Modern ComboBox -->
-        <Style x:Key="ModernComboBox" TargetType="ComboBox">
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        </Style>
 
-        <!-- Status Badge Style -->
+        <!-- Dark Status Badge Style -->
         <Style x:Key="StatusBadge" TargetType="Border">
-            <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Padding" Value="18,10"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#000000" Opacity="0.12" ShadowDepth="2" BlurRadius="8"/>
+                    <DropShadowEffect Color="#000000" Opacity="0.4" ShadowDepth="2" BlurRadius="12"/>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Dark ComboBox Toggle Button -->
+        <ControlTemplate x:Key="DarkComboBoxToggleButton" TargetType="ToggleButton">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="28" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="8"
+                        Background="#0F1323" BorderBrush="#2A3050" BorderThickness="1"/>
+                <Border Grid.Column="0" CornerRadius="8,0,0,8" Margin="1" 
+                        Background="Transparent" BorderThickness="0"/>
+                <Path x:Name="Arrow" Grid.Column="1" Fill="#8B92A5" 
+                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Data="M0,0 L4,4 8,0"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#3D4670"/>
+                    <Setter TargetName="Arrow" Property="Fill" Value="#E8EAED"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="#6C63FF"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <!-- Dark ComboBox TextBox -->
+        <ControlTemplate x:Key="DarkComboBoxTextBox" TargetType="TextBox">
+            <Border x:Name="PART_ContentHost" Focusable="False" Background="Transparent"/>
+        </ControlTemplate>
+
+        <!-- Global Dark ComboBox Style -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="Background" Value="#0F1323"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" 
+                                         Template="{StaticResource DarkComboBoxToggleButton}"
+                                         Grid.Column="2" Focusable="False"
+                                         IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                         ClickMode="Press"/>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"
+                                            Content="{TemplateBinding SelectionBoxItem}"
+                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                            Margin="14,3,28,3"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#E8EAED"/>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                            <TextBox x:Name="PART_EditableTextBox" 
+                                     Style="{x:Null}"
+                                     Template="{StaticResource DarkComboBoxTextBox}"
+                                     HorizontalAlignment="Left" VerticalAlignment="Center"
+                                     Margin="14,3,28,3" Focusable="True"
+                                     Background="Transparent" Foreground="#E8EAED"
+                                     CaretBrush="#E8EAED"
+                                     Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True" Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" 
+                                            Background="#141929" 
+                                            BorderBrush="#2A3050" 
+                                            BorderThickness="1" 
+                                            CornerRadius="8"
+                                            Margin="0,2,0,0">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#000000" Opacity="0.5" ShadowDepth="4" BlurRadius="16"/>
+                                        </Border.Effect>
+                                    </Border>
+                                    <ScrollViewer Margin="4,8,4,8" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEditable" Value="True">
+                                <Setter Property="IsTabStop" Value="False"/>
+                                <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark ComboBox Item -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}" 
+                                CornerRadius="4" Margin="2,1">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#2A3060"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#6C63FF"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Global Dark TabControl Style -->
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#E8EAED"/>
+        </Style>
+
+        <!-- Global Dark TabItem Style -->
+        <Style TargetType="TabItem">
+            <Setter Property="Background" Value="#141929"/>
+            <Setter Property="Foreground" Value="#8B92A5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="tabBorder" 
+                                Background="#141929" 
+                                BorderThickness="0,0,0,2" 
+                                BorderBrush="Transparent"
+                                Padding="{TemplateBinding Padding}" 
+                                Margin="0,0,2,0"
+                                CornerRadius="8,8,0,0">
+                            <ContentPresenter x:Name="contentPresenter" 
+                                            ContentSource="Header" 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            TextBlock.Foreground="#8B92A5"
+                                            TextBlock.FontWeight="SemiBold"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="tabBorder" Property="Background" Value="#1E2542"/>
+                                <Setter TargetName="tabBorder" Property="BorderBrush" Value="#6C63FF"/>
+                                <Setter TargetName="contentPresenter" Property="TextBlock.Foreground" Value="#E8EAED"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="tabBorder" Property="Background" Value="#1A2038"/>
+                                <Setter TargetName="contentPresenter" Property="TextBlock.Foreground" Value="#C0C4D0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Global Dark ListBox Style -->
+        <Style TargetType="ListBox">
+            <Setter Property="Background" Value="#0F1323"/>
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <!-- Global Dark ListBoxItem Style -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1E2542"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#2A3060"/>
+                    <Setter Property="Foreground" Value="#E8EAED"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Global Dark CheckBox Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="Background" Value="#0F1323"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="6,0,0,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Check box border -->
+                            <Border x:Name="checkBoxBorder" 
+                                    Grid.Column="0"
+                                    Width="18" Height="18"
+                                    Background="#0F1323"
+                                    BorderBrush="#2A3050"
+                                    BorderThickness="2"
+                                    CornerRadius="3"
+                                    VerticalAlignment="Center">
+                                <!-- Checkmark path -->
+                                <Path x:Name="checkMark"
+                                      Data="M2,5 L6,9 L12,1"
+                                      Stroke="#0F1323"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      StrokeLineJoin="Round"
+                                      Stretch="Uniform"
+                                      Margin="2"
+                                      Visibility="Collapsed"/>
+                            </Border>
+                            <!-- Content -->
+                            <ContentPresenter Grid.Column="1" 
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Checked: white box with dark checkmark -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="Background" Value="White"/>
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="White"/>
+                                <Setter TargetName="checkMark" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="checkMark" Property="Stroke" Value="#0A0E1A"/>
+                            </Trigger>
+                            <!-- Hover effect -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#6C63FF"/>
+                            </Trigger>
+                            <!-- Disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Global Dark RadioButton Style -->
+        <Style TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="Background" Value="#0F1323"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+        </Style>
+
+        <!-- Global Dark Separator Style -->
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="#2A3050"/>
+            <Setter Property="Margin" Value="0,8,0,8"/>
+        </Style>
+
+        <!-- Global Dark PasswordBox Style -->
+        <Style TargetType="PasswordBox">
+            <Setter Property="Background" Value="#0F1323"/>
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+            <Setter Property="CaretBrush" Value="#E8EAED"/>
+        </Style>
+
+        <!-- Premium Dark ScrollBar Thumb -->
+        <Style x:Key="DarkScrollBarThumb" TargetType="Thumb">
+            <Setter Property="Background" Value="#2A3050"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="thumbBorder" CornerRadius="3" 
+                                Background="#2A3050" 
+                                Margin="1"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#3D4670"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#6C63FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Premium Dark Vertical ScrollBar -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Border Background="#0A0E1A" CornerRadius="4" Opacity="0.3"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource DarkScrollBarThumb}"/>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="8"/>
+                    <Setter Property="MinHeight" Value="8"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid>
+                                    <Border Background="#0A0E1A" CornerRadius="4" Opacity="0.3"/>
+                                    <Track x:Name="PART_Track" IsDirectionReversed="False">
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource DarkScrollBarThumb}"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Global Dark ToolTip -->
+        <Style TargetType="ToolTip">
+            <Setter Property="Background" Value="#1A1F35"/>
+            <Setter Property="Foreground" Value="#E8EAED"/>
+            <Setter Property="BorderBrush" Value="#2A3050"/>
+        </Style>
+
+        <!-- Global Dark TextBlock (default light text) -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+        </Style>
+
+        <!-- Global Dark Label -->
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#E8EAED"/>
+        </Style>
     </Window.Resources>
 
-    <Grid Background="#F5F5F5">
+    <Grid Background="#0A0E1A">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -222,12 +602,12 @@
         <Border Grid.Row="0" Margin="0,0,0,12">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#FFFFFF" Offset="0"/>
-                    <GradientStop Color="#FAFBFC" Offset="1"/>
+                    <GradientStop Color="#0D1224" Offset="0"/>
+                    <GradientStop Color="#141B33" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
             <Border.Effect>
-                <DropShadowEffect Color="#000000" Opacity="0.06" ShadowDepth="3" BlurRadius="12" Direction="270"/>
+                <DropShadowEffect Color="#000000" Opacity="0.4" ShadowDepth="3" BlurRadius="16" Direction="270"/>
             </Border.Effect>
             <Grid Margin="32,24">
                 <Grid.ColumnDefinitions>
@@ -239,11 +619,11 @@
                     <TextBlock FontSize="28" FontWeight="Bold" Margin="0,0,0,4">
                         <TextBlock.Foreground>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Color="#0078D4" Offset="0"/>
-                                <GradientStop Color="#00B7C3" Offset="1"/>
+                                <GradientStop Color="#6C63FF" Offset="0"/>
+                                <GradientStop Color="#00D9FF" Offset="1"/>
                             </LinearGradientBrush>
                         </TextBlock.Foreground>
-                        <Run Text="🔐 SL NET"/><Run Text="PRO" FontSize="14" BaselineAlignment="Superscript" Foreground="#00B7C3" FontWeight="Bold"/>
+                        <Run Text="🔐 SL NET"/><Run Text="PRO" FontSize="14" BaselineAlignment="Superscript" Foreground="#00D9FF" FontWeight="Bold"/>
                     </TextBlock>
                     <TextBlock Text="Multi-Protocol Support: VLESS • VMESS • SSH+TLS" 
                                Foreground="{StaticResource TextSecondaryBrush}" 
@@ -262,15 +642,14 @@
                                    Foreground="{StaticResource TextSecondaryBrush}" 
                                    Margin="0,0,0,6"/>
                         <ComboBox Name="ProxyModeComboBox" 
-                                  Style="{StaticResource ModernComboBox}" 
+                                  
                                   Width="170" 
                                   Height="40"
                                   SelectionChanged="ProxyModeComboBox_SelectionChanged">
                             <ComboBoxItem Content="System Proxy" Tag="System" IsSelected="True"/>
                             <ComboBoxItem Content="Global Proxy" Tag="Global"/>
-                            <ComboBoxItem Content="PAC Script" Tag="PAC"/>
-                            <ComboBoxItem Content="Manual Proxy" Tag="Manual"/>
-                            <ComboBoxItem Content="No Proxy" Tag="None"/>
+                            <ComboBoxItem Content="TUN - tun2socks" Tag="TUN1"/>
+                            <ComboBoxItem Content="TUN - sing-box" Tag="TUN2"/>
                         </ComboBox>
                     </StackPanel>
                     
@@ -302,10 +681,12 @@
             <Button x:Name="UpdateXrayButton" 
                     Content="⬇ Update Xray" 
                     Style="{StaticResource ModernButton}"
-                    Background="#6F42C1" 
+                    Background="#7C4DFF" 
                     Padding="28,11" 
                     MinWidth="130"
                     Click="UpdateXrayButton_Click" 
+                    IsEnabled="False"
+                    Visibility="Collapsed"
                     ToolTip="Download latest Xray-core (x64)" />
                 </StackPanel>
             </Grid>
@@ -317,6 +698,7 @@
                 Margin="24,0,24,24" 
                 Background="Transparent" 
                 BorderThickness="0" 
+                Foreground="#E8EAED"
                 SelectionChanged="MainTabControl_SelectionChanged"
                 FontSize="14">
             <!-- Online VPN Tab -->
@@ -350,7 +732,7 @@
 
                                     <TextBlock Text="Select Server:" FontWeight="SemiBold" Grid.Row="0" Grid.Column="0" Margin="0,0,0,5"/>
                                     <ComboBox Name="ServerConfigComboBox" 
-                                              Style="{StaticResource ModernComboBox}" 
+                                              
                                               Height="40" 
                                               Grid.Row="1" 
                                               Grid.Column="0"
@@ -390,7 +772,7 @@
                                          IsReadOnly="True" 
                                          IsTabStop="False"
                                          Foreground="{StaticResource TextSecondaryBrush}" 
-                                         Background="#F8F9FA" 
+                                         Background="#0F1323" 
                                          Margin="0,0,0,16"/>
 
                                 <!-- Port -->
@@ -399,7 +781,7 @@
                                          IsReadOnly="True" 
                                          IsTabStop="False"
                                          Foreground="{StaticResource TextSecondaryBrush}" 
-                                         Background="#F8F9FA" 
+                                         Background="#0F1323" 
                                          Margin="0,0,0,16"/>
 
                                 <!-- Security/Protocol -->
@@ -408,7 +790,7 @@
                                          IsReadOnly="True" 
                                          IsTabStop="False"
                                          Foreground="{StaticResource TextSecondaryBrush}" 
-                                         Background="#F8F9FA" 
+                                         Background="#0F1323" 
                                          Margin="0,0,0,16"/>
 
                                 <!-- Transport -->
@@ -417,7 +799,7 @@
                                          IsReadOnly="True" 
                                          IsTabStop="False"
                                          Foreground="{StaticResource TextSecondaryBrush}" 
-                                         Background="#F8F9FA" 
+                                         Background="#0F1323" 
                                          Margin="0,0,0,16"/>
 
                                 <!-- SNI (Editable) -->
@@ -437,7 +819,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBox Name="SNITextBox" Grid.Column="0" Style="{StaticResource ModernTextBox}" 
-                                             Background="White" Foreground="#333" Margin="0,0,10,0"/>
+                                             Background="#0F1323" Foreground="#E8EAED" Margin="0,0,10,0"/>
                                     <Button Name="SaveButton" 
                                             Grid.Column="1" 
                                             Content="💾 Save" 
@@ -519,7 +901,7 @@
 
                                 <!-- Saved Configs -->
                                 <TextBlock Text="Saved Configurations" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <ComboBox Name="SSHConfigComboBox" Style="{StaticResource ModernComboBox}" 
+                                <ComboBox Name="SSHConfigComboBox" 
                                           Height="40" DisplayMemberPath="Tag" Margin="0,0,0,10"
                                           SelectionChanged="SSHConfigComboBox_SelectionChanged"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
@@ -534,21 +916,21 @@
                                 <!-- SSH Fields -->
                                 <TextBlock Text="SSH Host" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Name="SSHHostTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+                                         Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
 
                                 <TextBlock Text="SSH Port" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Name="SSHPortTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="{StaticResource TextPrimaryBrush}" Text="22" Margin="0,0,0,16"/>
+                                         Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" Text="22" Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Username" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Name="SSHUsernameTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+                                         Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Password" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <Border CornerRadius="6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                     <PasswordBox Name="SSHPasswordBox" 
                                                  Padding="12,10" Height="40"
-                                                 Background="White" Foreground="{StaticResource TextPrimaryBrush}" 
+                                                 Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" 
                                                  BorderThickness="0" Margin="0"/>
                                 </Border>
                                 <TextBlock Height="16" Margin="0,0,0,0"/>
@@ -565,7 +947,7 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBox Name="SSHKeyPathTextBox" Grid.Column="0" 
                                                  Style="{StaticResource ModernTextBox}" 
-                                                 Background="White" Foreground="#333" 
+                                                 Background="#0F1323" Foreground="#E8EAED" 
                                                  Margin="0,0,10,0" IsReadOnly="True"/>
                                         <Button Name="BrowseSSHKeyButton" Grid.Column="1" 
                                                 Content="📂 Browse" 
@@ -579,7 +961,7 @@
                                     <Border CornerRadius="6" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                         <PasswordBox Name="SSHKeyPassphraseBox" 
                                                      Padding="12,10" Height="40"
-                                                     Background="White" Foreground="{StaticResource TextPrimaryBrush}" 
+                                                     Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" 
                                                      BorderThickness="0" Margin="0"/>
                                     </Border>
                                     <TextBlock Height="16" Margin="0,0,0,0"/>
@@ -589,7 +971,7 @@
 
                                 <TextBlock Text="Advanced Options (for 3x-ui panels)" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
                                 <TextBlock Text="Transport Type" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <ComboBox Name="SSHTransportComboBox" Style="{StaticResource ModernComboBox}" 
+                                <ComboBox Name="SSHTransportComboBox" 
                                           Height="40" Margin="0,0,0,10">
                                     <ComboBoxItem Content="Direct TCP" Tag="direct" IsSelected="True"/>
                                     <ComboBoxItem Content="WebSocket (WS)" Tag="ws"/>
@@ -602,7 +984,11 @@
                                     <TextBlock Text=" • Optional" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" Margin="6,2,0,0"/>
                                 </StackPanel>
                                 <TextBox Name="SSHSNITextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                         Background="#0F1323" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,12"/>
+
+                                <TextBlock Text="Connection Options" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                                <CheckBox Name="UseSSHTLSCheck" Content="Enable TLS wrapping (recommended for non-standard SSH ports)" IsChecked="True" Margin="0,0,0,4"/>
+                                <TextBlock Text="Tip: Disable TLS if connecting to standard SSH (port 22)" FontSize="11" Foreground="#8B92A5" Margin="20,0,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -631,28 +1017,28 @@
 
                             <!-- Protocol Info -->
                             <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Protocol:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="SSHProtocolText" Text="SSH+TLS" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                <TextBlock Text="Protocol:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="SSHProtocolText" Text="SSH+TLS" FontSize="14" FontWeight="SemiBold" Foreground="#E8EAED"/>
                             </StackPanel>
 
                             <!-- Config Status -->
                             <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Configuration:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="SSHConfigStatusText" Text="Not configured" FontSize="13" Foreground="#666" TextWrapping="Wrap"/>
+                                <TextBlock Text="Configuration:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="SSHConfigStatusText" Text="Not configured" FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap"/>
                             </StackPanel>
 
                             <Separator Margin="0,10,0,15"/>
 
                             <!-- Statistics -->
-                            <TextBlock Text="📈 Traffic Statistics" FontSize="14" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
+                            <TextBlock Text="📈 Traffic Statistics" FontSize="14" FontWeight="Bold" Foreground="#E8EAED" Margin="0,0,0,10"/>
 
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Downloaded:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="SSHDownloadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#28A745"/>
+                                <TextBlock Text="Downloaded:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="SSHDownloadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#00E676"/>
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Uploaded:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
+                                <TextBlock Text="Uploaded:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
                                 <TextBlock Name="SSHUploadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#007ACC"/>
                             </StackPanel>
 
@@ -660,9 +1046,9 @@
 
                             <!-- Connection Info -->
                             <StackPanel Name="SSHConnectionInfo" Visibility="Collapsed">
-                                <TextBlock Text="🔌 Connection Details" FontSize="13" FontWeight="Bold" Foreground="#333" Margin="0,0,0,8"/>
-                                <TextBlock Name="SSHServerInfo" Text="" FontSize="11" Foreground="#666" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                                <TextBlock Name="SSHProxyInfo" Text="" FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                <TextBlock Text="🔌 Connection Details" FontSize="13" FontWeight="Bold" Foreground="#E8EAED" Margin="0,0,0,8"/>
+                                <TextBlock Name="SSHServerInfo" Text="" FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                <TextBlock Name="SSHProxyInfo" Text="" FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap"/>
                             </StackPanel>
                         </StackPanel>
                         </ScrollViewer>
@@ -694,7 +1080,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBox Name="CustomLinkTextBox" Grid.Column="0" 
                                              Style="{StaticResource ModernTextBox}" 
-                                             Background="White" Foreground="#333" 
+                                             Background="#0F1323" Foreground="#E8EAED" 
                                              Margin="0,0,10,0"
                                              TextWrapping="Wrap"
                                              MinHeight="60"
@@ -716,7 +1102,7 @@
                                 <!-- Saved Custom Configs -->
                                 <TextBlock Text="Saved Configurations" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <ComboBox Name="CustomConfigComboBox" 
-                                          Style="{StaticResource ModernComboBox}" 
+                                          
                                           Height="40" 
                                           DisplayMemberPath="Tag" 
                                           Margin="0,0,0,10"
@@ -737,22 +1123,22 @@
                                 <!-- Editable Fields -->
                                 <TextBlock Text="Configuration Name/Tag:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomTagTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="Server Host:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomHostTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="Port:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomPortTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="UUID:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomUUIDTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="Security:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <ComboBox Name="CustomSecurityComboBox" Style="{StaticResource ModernComboBox}" 
+                                <ComboBox Name="CustomSecurityComboBox" 
                                           Height="40" Margin="0,0,0,15">
                                     <ComboBoxItem Content="none" IsSelected="True"/>
                                     <ComboBoxItem Content="tls"/>
@@ -760,7 +1146,7 @@
                                 </ComboBox>
 
                                 <TextBlock Text="Transport Type:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <ComboBox Name="CustomTransportComboBox" Style="{StaticResource ModernComboBox}" 
+                                <ComboBox Name="CustomTransportComboBox" 
                                           Height="40" Margin="0,0,0,15">
                                     <ComboBoxItem Content="tcp" IsSelected="True"/>
                                     <ComboBoxItem Content="ws"/>
@@ -771,11 +1157,11 @@
 
                                 <TextBlock Text="SNI (Server Name Indication):" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomSNITextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
 
                                 <TextBlock Text="Path (for WS/gRPC/H2):" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBox Name="CustomPathTextBox" Style="{StaticResource ModernTextBox}" 
-                                         Background="White" Foreground="#333" Margin="0,0,0,15"/>
+                                         Background="#0F1323" Foreground="#E8EAED" Margin="0,0,0,15"/>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -800,28 +1186,28 @@
 
                             <!-- Protocol Info -->
                             <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Protocol:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="CustomProtocolText" Text="N/A" FontSize="14" FontWeight="SemiBold" Foreground="#333"/>
+                                <TextBlock Text="Protocol:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="CustomProtocolText" Text="N/A" FontSize="14" FontWeight="SemiBold" Foreground="#E8EAED"/>
                             </StackPanel>
 
                             <!-- Config Status -->
                             <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Configuration:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="CustomConfigStatusText" Text="No configuration loaded" FontSize="13" Foreground="#666" TextWrapping="Wrap"/>
+                                <TextBlock Text="Configuration:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="CustomConfigStatusText" Text="No configuration loaded" FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap"/>
                             </StackPanel>
 
                             <Separator Margin="0,10,0,15"/>
 
                             <!-- Statistics -->
-                            <TextBlock Text="📈 Traffic Statistics" FontSize="14" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
+                            <TextBlock Text="📈 Traffic Statistics" FontSize="14" FontWeight="Bold" Foreground="#E8EAED" Margin="0,0,0,10"/>
 
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Downloaded:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
-                                <TextBlock Name="CustomDownloadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#28A745"/>
+                                <TextBlock Text="Downloaded:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
+                                <TextBlock Name="CustomDownloadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#00E676"/>
                             </StackPanel>
 
                             <StackPanel Margin="0,0,0,10">
-                                <TextBlock Text="Uploaded:" FontSize="11" Foreground="#666" Margin="0,0,0,3"/>
+                                <TextBlock Text="Uploaded:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,3"/>
                                 <TextBlock Name="CustomUploadedText" Text="0 B" FontSize="14" FontWeight="SemiBold" Foreground="#007ACC"/>
                             </StackPanel>
 
@@ -829,9 +1215,9 @@
 
                             <!-- Connection Info -->
                             <StackPanel Name="CustomConnectionInfo" Visibility="Collapsed">
-                                <TextBlock Text="🔌 Connection Details" FontSize="13" FontWeight="Bold" Foreground="#333" Margin="0,0,0,8"/>
-                                <TextBlock Name="CustomServerInfo" Text="" FontSize="11" Foreground="#666" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                                <TextBlock Name="CustomProxyInfo" Text="" FontSize="11" Foreground="#666" TextWrapping="Wrap"/>
+                                <TextBlock Text="🔌 Connection Details" FontSize="13" FontWeight="Bold" Foreground="#E8EAED" Margin="0,0,0,8"/>
+                                <TextBlock Name="CustomServerInfo" Text="" FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                <TextBlock Name="CustomProxyInfo" Text="" FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap"/>
                             </StackPanel>
                         </StackPanel>
                         </ScrollViewer>
@@ -858,7 +1244,7 @@
                                 <Separator Margin="0,0,0,16" Background="{StaticResource BorderBrush}"/>
 
                                 <TextBlock Text="Listen Address" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <ComboBox Name="ShareListenHostComboBox" Style="{StaticResource ModernComboBox}" Height="40" Margin="0,0,0,16">
+                                <ComboBox Name="ShareListenHostComboBox" Height="40" Margin="0,0,0,16">
                                     <ComboBoxItem Content="127.0.0.1 (Local only)" Tag="127.0.0.1"/>
                                     <ComboBoxItem Content="0.0.0.0 (All interfaces - LAN)" IsSelected="True" Tag="0.0.0.0"/>
                                 </ComboBox>
@@ -877,12 +1263,62 @@
 
                                 <Separator Margin="0,18,0,18" Background="{StaticResource BorderBrush}"/>
 
+                                <!-- Global Speed Limit Section -->
+                                <TextBlock Text="⚡ Global Speed Limit" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
+                                <TextBlock Text="System-wide speed limit (applies to host PC and all shared clients). Requires administrator privileges." FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Download Limit (KB/s):" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <TextBox Name="GlobalDownloadLimitTextBox" Style="{StaticResource ModernTextBox}" Text="0"/>
+                                        <TextBlock Text="0 = unlimited" FontSize="10" Foreground="#999" Margin="0,2,0,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Upload Limit (KB/s):" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <TextBox Name="GlobalUploadLimitTextBox" Style="{StaticResource ModernTextBox}" Text="0"/>
+                                        <TextBlock Text="0 = unlimited" FontSize="10" Foreground="#999" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Button Name="ApplyGlobalSpeedLimitButton" 
+                                        Content="✅ Apply Global Speed Limit" 
+                                        Style="{StaticResource ModernButton}" 
+                                        Background="{StaticResource InfoBrush}" 
+                                        Padding="28,11" 
+                                        MinWidth="160"
+                                        Margin="0,0,0,8"
+                                        Click="ApplyGlobalSpeedLimitButton_Click"/>
+
+                                <Button Name="RemoveGlobalSpeedLimitButton" 
+                                        Content="❌ Remove Limit" 
+                                        Style="{StaticResource ModernButton}" 
+                                        Background="{StaticResource DangerBrush}" 
+                                        Padding="28,11" 
+                                        MinWidth="160"
+                                        Margin="0,0,0,12"
+                                        Click="RemoveGlobalSpeedLimitButton_Click"/>
+
+                                <TextBlock Name="GlobalSpeedLimitStatusText" 
+                                           Text="Global Limit: Not Applied" 
+                                           FontSize="11" 
+                                           Foreground="#8B92A5"
+                                           Margin="0,0,0,15"/>
+
+                                <Separator Margin="0,0,0,18" Background="{StaticResource BorderBrush}"/>
+
                                 <!-- URL Filtering Section -->
                                 <TextBlock Text="🎯 URL Filtering" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,10"/>
                                 <TextBlock Text="Shared VPN clients can ONLY access these URLs. PC has unrestricted access." FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
                                 <TextBlock Text="Add Allowed URL" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBlock Text="Enter domain (e.g., google.com) or full URL. Only these will work through shared VPN." FontSize="11" Foreground="#666" Margin="0,0,0,5"/>
+                                <TextBlock Text="Enter domain (e.g., google.com) or full URL. Only these will work through shared VPN." FontSize="11" Foreground="#8B92A5" Margin="0,0,0,5"/>
                                 
                                 <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
@@ -893,8 +1329,8 @@
                                     <TextBox Name="ShareFilterUrlTextBox" 
                                              Grid.Column="0" 
                                              Style="{StaticResource ModernTextBox}" 
-                                             Background="White" 
-                                             Foreground="#333"/>
+                                             Background="#0F1323" 
+                                             Foreground="#E8EAED"/>
                                     <Button Name="AddShareFilterButton" 
                                             Grid.Column="2" 
                                             Content="➕ Add" 
@@ -916,7 +1352,7 @@
                                                Margin="0,0,5,0"/>
                                     <TextBlock Text="Blocks unlisted URLs" 
                                                FontSize="11" 
-                                               Foreground="#666" 
+                                               Foreground="#8B92A5" 
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
 
@@ -932,7 +1368,7 @@
                                 <TextBlock Name="ShareFilterStatusText" 
                                            Text="Filter: Disabled" 
                                            FontSize="11" 
-                                           Foreground="#666"
+                                           Foreground="#8B92A5"
                                            Margin="0,0,0,15"/>
 
                                 <Separator Margin="0,0,0,15"/>
@@ -963,26 +1399,26 @@
                                 </Border>
 
                                 <TextBlock Text="Endpoints" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
-                                <TextBlock Name="ShareHttpInfo" Text="HTTP: -" FontSize="12" Foreground="#666" Margin="0,0,0,5"/>
-                                <TextBlock Name="ShareSocksInfo" Text="SOCKS5: -" FontSize="12" Foreground="#666"/>
-                                <TextBlock Text="Use these addresses in your phone's Wi‑Fi proxy settings (HTTP proxy). Mobile Hotspot alone will NOT route through the VPN; you must set the proxy on the phone." FontSize="11" Foreground="#666" TextWrapping="Wrap" Margin="10,10,0,0"/>
+                                <TextBlock Name="ShareHttpInfo" Text="HTTP: -" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,5"/>
+                                <TextBlock Name="ShareSocksInfo" Text="SOCKS5: -" FontSize="12" Foreground="#8B92A5"/>
+                                <TextBlock Text="Use these addresses in your phone's Wi‑Fi proxy settings (HTTP proxy). Mobile Hotspot alone will NOT route through the VPN; you must set the proxy on the phone." FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap" Margin="10,10,0,0"/>
 
                                 <Separator Margin="0,10,0,10"/>
 
                                 <TextBlock Text="Connections" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
                                 <TextBlock Name="ShareActiveText" Text="Active: 0" FontSize="12" Foreground="#007ACC"/>
-                                <TextBlock Name="ShareTotalText" Text="Total: 0" FontSize="12" Foreground="#28A745"/>
+                                <TextBlock Name="ShareTotalText" Text="Total: 0" FontSize="12" Foreground="#00E676"/>
 
                                 <Separator Margin="0,10,0,10"/>
 
-                                <TextBlock Text="Allowed URLs" FontSize="14" FontWeight="Bold" Foreground="#333" Margin="0,0,0,10"/>
-                                <TextBlock Text="Shared VPN clients can only access:" FontSize="11" Foreground="#666" Margin="0,0,0,5"/>
+                                <TextBlock Text="Allowed URLs" FontSize="14" FontWeight="Bold" Foreground="#E8EAED" Margin="0,0,0,10"/>
+                                <TextBlock Text="Shared VPN clients can only access:" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,5"/>
                                 <ListBox Name="ShareFilteredUrlsListBox" 
                                          Height="200" 
                                          Margin="0,0,0,10"
                                          BorderBrush="#DDDDDD"
                                          BorderThickness="1"
-                                         Background="White"/>
+                                         Background="#0F1323"/>
                                 <Button Name="DeleteShareFilterButton" 
                                         Content="🗑 Delete Selected" 
                                         Style="{StaticResource ModernButton}" 
@@ -1039,7 +1475,7 @@
                                         <Button Name="SniStopButton" Content="⏹ Stop" Style="{StaticResource ModernButton}" Background="{StaticResource DangerBrush}" Padding="24,11" MinWidth="90" Margin="12,0,0,0" Click="SniStopButton_Click" IsEnabled="False"/>
                                     </StackPanel>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Name="SniInlineStatusText" Text="" FontSize="12" Foreground="#666" Margin="0,5,0,0"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Name="SniInlineStatusText" Text="" FontSize="12" Foreground="#8B92A5" Margin="0,5,0,0"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -1051,24 +1487,24 @@
                             <StackPanel Margin="10">
                                 <TextBlock Text="📊 SNI Summary" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,12"/>
                                 <WrapPanel Margin="0,0,0,10">
-                                    <Border Name="SniBadgeConnectivity" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Conn" FontSize="11"/></Border>
-                                    <Border Name="SniBadgeTLS" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="TLS" FontSize="11"/></Border>
-                                    <Border Name="SniBadgeIdle" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Idle" FontSize="11"/></Border>
-                                    <Border Name="SniBadgeRedirect" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Redirect" FontSize="11"/></Border>
-                                    <Border Name="SniBadgeSpeed" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Speed" FontSize="11"/></Border>
+                                    <Border Name="SniBadgeConnectivity" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Conn" FontSize="11"/></Border>
+                                    <Border Name="SniBadgeTLS" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="TLS" FontSize="11"/></Border>
+                                    <Border Name="SniBadgeIdle" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Idle" FontSize="11"/></Border>
+                                    <Border Name="SniBadgeRedirect" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Redirect" FontSize="11"/></Border>
+                                    <Border Name="SniBadgeSpeed" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Speed" FontSize="11"/></Border>
                                 </WrapPanel>
                                 <TextBlock Text="Ping:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SniPingText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SniPingText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="TLS Handshake:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SniTlsText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SniTlsText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="Idle Tolerance:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SniIdleText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SniIdleText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="Redirect / Throughput:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SniSpeedText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
-                                <Border Name="SniOverallBorder" Background="#EEEEEE" CornerRadius="6" Padding="10" Margin="0,4,0,0">
+                                <TextBlock Name="SniSpeedText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
+                                <Border Name="SniOverallBorder" Background="#1A1F35" CornerRadius="6" Padding="10" Margin="0,4,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="Overall Verdict" FontSize="13" FontWeight="Bold"/>
-                                        <TextBlock Name="SniClassText" Text="-" FontSize="12" Foreground="#333" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Overall Verdict" FontSize="13" FontWeight="Bold" Foreground="#E8EAED"/>
+                                        <TextBlock Name="SniClassText" Text="-" FontSize="12" Foreground="#E8EAED" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -1088,8 +1524,9 @@
 
                     <!-- Left: Controls -->
                     <Border Grid.Column="0" Style="{StaticResource CardPanel}">
-                        <StackPanel Margin="10">
-                            <TextBlock Text="Network Speed &amp; Latency" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,12"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Network Speed &amp; Latency" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,12"/>
 
                             <Grid Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions>
@@ -1114,8 +1551,9 @@
                                 <Button Name="SpeedStopButton" Content="⏹ Stop" Style="{StaticResource ModernButton}" Background="{StaticResource DangerBrush}" Padding="24,11" MinWidth="100" Margin="12,0,0,0" Click="SpeedStopButton_Click" IsEnabled="False"/>
                             </StackPanel>
 
-                            <TextBlock Text="Notes: If VPN is connected, tests will use the VPN HTTP proxy path automatically." FontSize="11" Foreground="#666" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                            <TextBlock Text="Notes: If VPN is connected, tests will use the VPN HTTP proxy path automatically." FontSize="11" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,10,0,0"/>
                         </StackPanel>
+                        </ScrollViewer>
                     </Border>
 
                     <!-- Right: Summary -->
@@ -1124,29 +1562,29 @@
                             <StackPanel Margin="10">
                                 <TextBlock Text="📊 Speed Summary" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,12"/>
                                 <WrapPanel Margin="0,0,0,10">
-                                    <Border Name="SpeedBadgePing" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Ping" FontSize="11"/></Border>
-                                    <Border Name="SpeedBadgeDownload" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="DL" FontSize="11"/></Border>
-                                    <Border Name="SpeedBadgeUpload" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="UL" FontSize="11"/></Border>
-                                    <Border Name="SpeedBadgeGaming" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Gaming" FontSize="11"/></Border>
-                                    <Border Name="SpeedBadgeStreaming" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Streaming" FontSize="11"/></Border>
-                                    <Border Name="SpeedBadgeBrowsing" Background="#CCCCCC" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Browsing" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgePing" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Ping" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgeDownload" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="DL" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgeUpload" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="UL" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgeGaming" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Gaming" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgeStreaming" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Streaming" FontSize="11"/></Border>
+                                    <Border Name="SpeedBadgeBrowsing" Background="#2A3050" CornerRadius="4" Padding="6,3" Margin="0,0,6,6"><TextBlock Text="Browsing" FontSize="11"/></Border>
                                 </WrapPanel>
                                 <TextBlock Text="Latency:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SpeedPingText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SpeedPingText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="Download Throughput:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SpeedDownloadText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SpeedDownloadText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="Upload Throughput:" FontSize="13" FontWeight="Bold"/>
-                                <TextBlock Name="SpeedUploadText" Text="-" FontSize="12" Foreground="#666" Margin="0,0,0,8"/>
+                                <TextBlock Name="SpeedUploadText" Text="-" FontSize="12" Foreground="#8B92A5" Margin="0,0,0,8"/>
                                 <TextBlock Text="Use Case Ratings:" FontSize="13" FontWeight="Bold"/>
                                 <StackPanel Margin="0,0,0,8">
-                                    <TextBlock Name="SpeedGamingText" Text="-" FontSize="12" Foreground="#666"/>
-                                    <TextBlock Name="SpeedStreamingText" Text="-" FontSize="12" Foreground="#666"/>
-                                    <TextBlock Name="SpeedBrowsingText" Text="-" FontSize="12" Foreground="#666"/>
+                                    <TextBlock Name="SpeedGamingText" Text="-" FontSize="12" Foreground="#8B92A5"/>
+                                    <TextBlock Name="SpeedStreamingText" Text="-" FontSize="12" Foreground="#8B92A5"/>
+                                    <TextBlock Name="SpeedBrowsingText" Text="-" FontSize="12" Foreground="#8B92A5"/>
                                 </StackPanel>
-                                <Border Name="SpeedOverallBorder" Background="#EEEEEE" CornerRadius="6" Padding="10" Margin="0,4,0,0">
+                                <Border Name="SpeedOverallBorder" Background="#1A1F35" CornerRadius="6" Padding="10" Margin="0,4,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="Overall Quality" FontSize="13" FontWeight="Bold"/>
-                                        <TextBlock Name="SpeedOverallText" Text="-" FontSize="12" Foreground="#333" TextWrapping="Wrap"/>
+                                        <TextBlock Text="Overall Quality" FontSize="13" FontWeight="Bold" Foreground="#E8EAED"/>
+                                        <TextBlock Name="SpeedOverallText" Text="-" FontSize="12" Foreground="#E8EAED" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                             </StackPanel>
@@ -1169,11 +1607,12 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="10">
                             <TextBlock Text="Domain Blocker (System Proxy)" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,8"/>
-                            <TextBlock Text="Blocks at local HTTP proxy via routing rules. No PAC used." FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,12"/>
+                            <TextBlock Text="Blocks at local HTTP proxy via routing rules. No PAC used." FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,4"/>
+                            <TextBlock Text="⚠️ Note: YouTube ads cannot be blocked (served from same domains as videos)" FontSize="11" Foreground="#FF6B6B" Margin="0,0,0,12" TextWrapping="Wrap"/>
 
                             <TextBlock Text="Categories" FontWeight="SemiBold" Margin="0,0,0,6"/>
                             <StackPanel>
-                                <CheckBox x:Name="AdsBlockCheck" Content="Ads Block" IsChecked="False"/>
+                                <CheckBox x:Name="AdsBlockCheck" Content="Ads Block (Enable lists below for better blocking)" IsChecked="False"/>
                                 <CheckBox x:Name="AdultBlockCheck" Content="18+ Block" IsChecked="False"/>
                                 <CheckBox x:Name="SocialBlockCheck" Content="Social Media Block" IsChecked="False"/>
                             </StackPanel>
@@ -1181,7 +1620,7 @@
                             <Separator Margin="0,10,0,10"/>
 
                             <TextBlock Text="Custom URL/Domain" FontWeight="SemiBold"/>
-                            <TextBlock Text="Enter domain (e.g., example.com) or full URL; it will normalize to domain." FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="Enter domain (e.g., example.com) or full URL; it will normalize to domain." FontSize="11" Foreground="#8B92A5"/>
                             <Grid Margin="0,6,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -1195,7 +1634,7 @@
                             <Separator Margin="0,12,0,10"/>
 
                             <TextBlock Text="Whitelist URL/Domain" FontWeight="SemiBold"/>
-                            <TextBlock Text="Bypass blocking and route DIRECT (no VPN)" FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="Bypass blocking and route DIRECT (no VPN)" FontSize="11" Foreground="#8B92A5"/>
                             <Grid Margin="0,6,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -1206,10 +1645,11 @@
                                 <Button x:Name="AddWhitelistButton" Content="➕ Add" Style="{StaticResource ModernButton}" Grid.Column="2" Background="{StaticResource SuccessBrush}" Padding="22,11" MinWidth="100" Click="AddWhitelistButton_Click"/>
                             </Grid>
 
-                            <TextBlock x:Name="BlockerStatusText" Text="Not applied" Foreground="#666" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="BlockerStatusText" Text="Not applied" Foreground="#8B92A5" Margin="0,10,0,0"/>
 
                             <Separator Margin="0,12,0,12" Background="{StaticResource BorderBrush}"/>
-                            <TextBlock Text="Advanced Ads Block Lists" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,8"/>
+                            <TextBlock Text="Advanced Ads Block Lists" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,4"/>
+                            <TextBlock Text="Click 'Update Lists' first to download, then Apply to use them" FontSize="11" Foreground="#8B92A5" Margin="0,0,0,8" TextWrapping="Wrap"/>
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <CheckBox x:Name="UseOisdSmallCheck" Content="OISD Small" Margin="0,0,10,0" IsChecked="False"/>
@@ -1218,7 +1658,7 @@
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                     <Button x:Name="UpdateListsButton" Content="⬇ Update Lists" Style="{StaticResource ModernButton}" Background="#6F42C1" Padding="20,11" MinWidth="130" Click="UpdateListsButton_Click"/>
-                                    <TextBlock x:Name="ListsSummaryText" Text="Lists: -" FontSize="11" Foreground="#666" Margin="10,10,0,0"/>
+                                    <TextBlock x:Name="ListsSummaryText" Text="Lists: -" FontSize="11" Foreground="#8B92A5" Margin="10,10,0,0"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -1236,31 +1676,38 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="10">
                             <TextBlock Text="📋 How to Use" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,8"/>
-                            <Border Background="#F8F9FA" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                            <Border Background="#0F1323" CornerRadius="6" Padding="12" Margin="0,0,0,8">
                                 <StackPanel>
-                                    <TextBlock Text="1. Categories: Check Ads/18+/Social → click Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBlock Text="2. Custom Block: Add domain → Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBlock Text="3. Whitelist: Bypasses VPN (goes DIRECT)" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBlock Text="4. External Lists: Check source → Update Lists" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBlock Text="1. Categories: Check Ads/18+/Social → Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBlock Text="2. For Better Ad Blocking: Check list sources below → Click 'Update Lists' → Then Apply" FontSize="12" Foreground="#6F42C1" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                    <TextBlock Text="3. Custom Block: Add domain → Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBlock Text="4. Whitelist: Bypasses VPN (goes DIRECT)" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                     <TextBlock Text="5. Uncheck + Apply to stop blocking" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" FontStyle="Italic"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Background="#FFF3CD" BorderBrush="#FFC107" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,16">
+                                <StackPanel>
+                                    <TextBlock Text="⚠️ Important Limitations:" FontSize="12" FontWeight="Bold" Foreground="#856404" Margin="0,0,0,4"/>
+                                    <TextBlock Text="• YouTube ads CANNOT be blocked (ads use same domains as videos)" FontSize="11" Foreground="#856404" TextWrapping="Wrap" Margin="0,0,0,2"/>
+                                    <TextBlock Text="• Network-level blocking works for most websites but not for embedded ads" FontSize="11" Foreground="#856404" TextWrapping="Wrap"/>
                                 </StackPanel>
                             </Border>
                             <Separator Margin="0,0,0,12" Background="{StaticResource BorderBrush}"/>
                             <TextBlock Text="Active Custom Blocked Domains" FontSize="15" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                            <TextBlock Text="Select a domain and click Delete to remove." FontSize="11" Foreground="#666" Margin="0,4,0,10"/>
-                            <ListBox x:Name="BlockedUrlsListBox" Height="300"/>
+                            <TextBlock Text="Select a domain and click Delete to remove." FontSize="11" Foreground="#8B92A5" Margin="0,4,0,10"/>
+                            <ListBox x:Name="BlockedUrlsListBox" Height="300" Background="#0F1323" Foreground="#E8EAED" BorderBrush="#2A3050" BorderThickness="1"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <Button x:Name="DeleteSelectedBlockButton" Content="🗑 Delete Selected" Style="{StaticResource ModernButton}" Background="#6C757D" Padding="22,11" MinWidth="160" Click="DeleteSelectedBlockButton_Click"/>
                             </StackPanel>
                             <Separator Margin="0,12,0,8"/>
                             <TextBlock Text="Whitelist Domains (Bypass via DIRECT)" FontSize="16" FontWeight="Bold" Foreground="#007ACC"/>
-                            <TextBlock Text="Select a domain and click Delete to remove." FontSize="11" Foreground="#666" Margin="0,4,0,10"/>
-                            <ListBox x:Name="WhitelistUrlsListBox" Height="220"/>
+                            <TextBlock Text="Select a domain and click Delete to remove." FontSize="11" Foreground="#8B92A5" Margin="0,4,0,10"/>
+                            <ListBox x:Name="WhitelistUrlsListBox" Height="220" Background="#0F1323" Foreground="#E8EAED" BorderBrush="#2A3050" BorderThickness="1"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <Button x:Name="DeleteSelectedWhitelistButton" Content="🗑 Delete Selected" Style="{StaticResource ModernButton}" Background="#6C757D" Padding="22,11" MinWidth="160" Click="DeleteSelectedWhitelistButton_Click"/>
                             </StackPanel>
                             <Separator Margin="0,12,0,8"/>
-                            <TextBlock x:Name="CategoriesSummaryText" Text="Categories applied: -" FontSize="12" Foreground="#333"/>
+                            <TextBlock x:Name="CategoriesSummaryText" Text="Categories applied: -" FontSize="12" Foreground="#E8EAED"/>
                         </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -1289,10 +1736,10 @@
                             <Separator Margin="0,10,0,10"/>
 
                             <TextBlock Text="Add Application" FontWeight="SemiBold"/>
-                            <TextBlock Text="Browse and select .exe files to route through VPN only." FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="Browse and select .exe files to route through VPN only." FontSize="11" Foreground="#8B92A5"/>
                             <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                 <Button x:Name="BrowseAppButton" Content="📂 Browse App" Style="{StaticResource ModernButton}" Background="{StaticResource SuccessBrush}" Padding="20,11" MinWidth="140" Click="BrowseAppButton_Click"/>
-                                <TextBlock x:Name="SelectedAppText" Text="No app selected" FontSize="11" Foreground="#666" Margin="10,10,0,0" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="SelectedAppText" Text="No app selected" FontSize="11" Foreground="#8B92A5" Margin="10,10,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <Separator Margin="0,12,0,10"/>
@@ -1301,7 +1748,7 @@
                             <CheckBox x:Name="CustomSNIRoutingCheck" Content="Enable Custom SNI Routing (VPN only for this SNI)"/>
                             
                             <TextBlock Text="Add SNI (Server Name):" FontWeight="SemiBold" Margin="0,8,0,5"/>
-                            <TextBlock Text="Enter SNI and click Add. Only these SNIs will use VPN." FontSize="11" Foreground="#666"/>
+                            <TextBlock Text="Enter SNI and click Add. Only these SNIs will use VPN." FontSize="11" Foreground="#8B92A5"/>
                             <Grid Margin="0,6,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -1318,7 +1765,7 @@
                                 <Button x:Name="ClearAllSplitTunnelButton" Content="🗑 Clear All" Style="{StaticResource ModernButton}" Background="{StaticResource DangerBrush}" Padding="28,11" MinWidth="130" Margin="12,0,0,0" Click="ClearAllSplitTunnelButton_Click"/>
                             </StackPanel>
 
-                            <TextBlock x:Name="SplitTunnelStatusText" Text="Not applied" Foreground="#666" Margin="0,10,0,0"/>
+                            <TextBlock x:Name="SplitTunnelStatusText" Text="Not applied" Foreground="#8B92A5" Margin="0,10,0,0"/>
                         </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -1328,7 +1775,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="10">
                             <TextBlock Text="📋 How to Use" FontSize="17" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" Margin="0,0,0,8"/>
-                            <Border Background="#F8F9FA" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                            <Border Background="#0F1323" CornerRadius="6" Padding="12" Margin="0,0,0,16">
                                 <StackPanel>
                                     <TextBlock Text="1. App Routing: Browse app → Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                     <TextBlock Text="2. SNI Routing: Add SNI → Check → Apply" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
@@ -1338,21 +1785,21 @@
                                 </StackPanel>
                             </Border>
                             <Separator Margin="0,0,0,10"/>
-                            <TextBlock Text="Active Routed Applications" FontSize="14" FontWeight="Bold" Foreground="#333"/>
-                            <TextBlock Text="Select an app and click Delete to remove." FontSize="11" Foreground="#666" Margin="0,4,0,10"/>
-                            <ListBox x:Name="RoutedAppsListBox" Height="180"/>
+                            <TextBlock Text="Active Routed Applications" FontSize="14" FontWeight="Bold" Foreground="#E8EAED"/>
+                            <TextBlock Text="Select an app and click Delete to remove." FontSize="11" Foreground="#8B92A5" Margin="0,4,0,10"/>
+                            <ListBox x:Name="RoutedAppsListBox" Height="180" Background="#0F1323" Foreground="#E8EAED" BorderBrush="#2A3050" BorderThickness="1"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <Button x:Name="DeleteSelectedAppButton" Content="🗑 Delete Selected" Style="{StaticResource ModernButton}" Background="#6C757D" Padding="22,11" MinWidth="160" Click="DeleteSelectedAppButton_Click"/>
                             </StackPanel>
                             <Separator Margin="0,12,0,8"/>
-                            <TextBlock Text="Active Custom SNIs" FontSize="14" FontWeight="Bold" Foreground="#333"/>
-                            <TextBlock Text="Select an SNI and click Delete to remove." FontSize="11" Foreground="#666" Margin="0,4,0,10"/>
-                            <ListBox x:Name="RoutedSNIsListBox" Height="120"/>
+                            <TextBlock Text="Active Custom SNIs" FontSize="14" FontWeight="Bold" Foreground="#E8EAED"/>
+                            <TextBlock Text="Select an SNI and click Delete to remove." FontSize="11" Foreground="#8B92A5" Margin="0,4,0,10"/>
+                            <ListBox x:Name="RoutedSNIsListBox" Height="120" Background="#0F1323" Foreground="#E8EAED" BorderBrush="#2A3050" BorderThickness="1"/>
                             <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                                 <Button x:Name="DeleteSelectedSNIButton" Content="🗑 Delete Selected" Style="{StaticResource ModernButton}" Background="#6C757D" Padding="20,8" Click="DeleteSelectedSNIButton_Click"/>
                             </StackPanel>
                             <Separator Margin="0,12,0,8"/>
-                            <TextBlock x:Name="SplitTunnelSummaryText" Text="Split Tunnel: Inactive" FontSize="12" Foreground="#333"/>
+                            <TextBlock x:Name="SplitTunnelSummaryText" Text="Split Tunnel: Inactive" FontSize="12" Foreground="#E8EAED"/>
                         </StackPanel>
                         </ScrollViewer>
                     </Border>
@@ -1382,7 +1829,7 @@
                             </Grid>
 
                             <!-- Log output -->
-                            <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Background="#FAFBFC">
+                            <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Background="#0B0F1E">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                     <TextBox Name="LogTextBox"
                                              IsReadOnly="True"
@@ -1434,7 +1881,7 @@
                                                 <GradientStop Color="#00B7C3" Offset="1"/>
                                             </LinearGradientBrush>
                                         </Border.Background>
-                                        <TextBlock Text="Version 6.5.1" 
+                                        <TextBlock Text="Version 6.8.5" 
                                                    FontSize="17" 
                                                    FontWeight="Bold" 
                                                    Foreground="White"/>
@@ -1459,25 +1906,25 @@
                                                        FontWeight="Bold" 
                                                        Foreground="{StaticResource PrimaryBrush}" 
                                                        Margin="0,0,0,16"/>
-                                            <Border Background="#F8F9FA" 
+                                            <Border Background="#0F1323" 
                                                     CornerRadius="8" 
                                                     Padding="25">
                                                 <StackPanel>
                                                     <TextBlock Text="Created by Isuru Sampath" 
                                                                FontSize="18" 
                                                                FontWeight="SemiBold" 
-                                                               Foreground="#333" 
+                                                               Foreground="#E8EAED" 
                                                                Margin="0,0,0,15"/>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                         <TextBlock Text="🎓" FontSize="18" Margin="0,0,10,0"/>
                                                         <TextBlock Text="University of Moratuwa, Sri Lanka" 
                                                                    FontSize="15" 
-                                                                   Foreground="#666" 
+                                                                   Foreground="#8B92A5" 
                                                                    TextWrapping="Wrap"/>
                                                     </StackPanel>
                                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                         <TextBlock Text="🌐" FontSize="18" Margin="0,0,10,0"/>
-                                                        <TextBlock FontSize="15" Foreground="#666">
+                                                        <TextBlock FontSize="15" Foreground="#8B92A5">
                                                             <Hyperlink NavigateUri="https://isuruhub.site" 
                                                                        RequestNavigate="Hyperlink_RequestNavigate">
                                                                 <Run Text="isuruhub.site"/>
@@ -1501,7 +1948,7 @@
                                                    FontWeight="Bold" 
                                                    Foreground="#007ACC" 
                                                    Margin="0,0,0,15"/>
-                                        <Border Background="#F8F9FA" 
+                                        <Border Background="#0F1323" 
                                                 CornerRadius="8" 
                                                 Padding="25">
                                             <StackPanel>
@@ -1509,52 +1956,58 @@
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="Multi-Protocol Support: VLESS, VMESS, SSH+TLS" 
                                                                FontSize="14" 
-                                                               Foreground="#333" 
+                                                               Foreground="#E8EAED" 
                                                                TextWrapping="Wrap"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="3x-ui Panel Configuration Support" 
                                                                FontSize="14" 
-                                                               Foreground="#333"/>
+                                                               Foreground="#E8EAED"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="VPN Sharing with URL Filtering" 
                                                                FontSize="14" 
-                                                               Foreground="#333"/>
+                                                               Foreground="#E8EAED"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                                    <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
+                                                    <TextBlock Text="Speed Limit Control (Client &amp; Global)" 
+                                                               FontSize="14" 
+                                                               Foreground="#E8EAED"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="Ad Blocker &amp; Content Filtering" 
                                                                FontSize="14" 
-                                                               Foreground="#333"/>
+                                                               Foreground="#E8EAED"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="Split Tunneling (App &amp; SNI-based)" 
                                                                FontSize="14" 
-                                                               Foreground="#333" 
+                                                               Foreground="#E8EAED" 
                                                                TextWrapping="Wrap"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="SNI Checker &amp; Speed Test Tools" 
                                                                FontSize="14" 
-                                                               Foreground="#333"/>
+                                                               Foreground="#E8EAED"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="Multiple Proxy Modes (System, Global, PAC)" 
                                                                FontSize="14" 
-                                                               Foreground="#333" 
+                                                               Foreground="#E8EAED" 
                                                                TextWrapping="Wrap"/>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="✅" FontSize="16" Margin="0,0,12,0"/>
                                                     <TextBlock Text="SSH Key Authentication &amp; Advanced Transport" 
                                                                FontSize="14" 
-                                                               Foreground="#333" 
+                                                               Foreground="#E8EAED" 
                                                                TextWrapping="Wrap"/>
                                                 </StackPanel>
                                             </StackPanel>
@@ -1571,7 +2024,7 @@
                                                Margin="0,0,0,20"/>
                                     
                                     <!-- Online VPN Tab Guide -->
-                                    <Border Background="#F0F8FF" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#0F1323" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1582,20 +2035,20 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🌐 Online VPN Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Connect to VPN servers from your 3x-ui panel or custom configuration sources." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Click 'Fetch Configuration' to load servers from your source" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Select a server from the dropdown list" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Modify SNI (Server Name Indication) if needed for bypassing restrictions" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Save the configuration for future use" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Choose Proxy Mode (System/Global/PAC/Manual/None) from the top toolbar" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Click 'Connect' - Monitor connection status and traffic statistics on the right panel" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Connect to VPN servers from your 3x-ui panel or custom configuration sources." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Click 'Fetch Configuration' to load servers from your source" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Select a server from the dropdown list" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Modify SNI (Server Name Indication) if needed for bypassing restrictions" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Save the configuration for future use" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Choose Proxy Mode (System/Global/PAC/Manual/None) from the top toolbar" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Click 'Connect' - Monitor connection status and traffic statistics on the right panel" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Custom SSH Tab Guide -->
-                                    <Border Background="#FFF8F0" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#13101F" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1606,20 +2059,20 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🔑 Custom SSH Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Create secure SSH tunnels with advanced transport options (WebSocket, gRPC, HTTP/2) and TLS wrapping." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Enter SSH server details (Host, Port, Username)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Choose authentication: Password or SSH Key (browse for private key file)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Select Transport method (Direct/WebSocket/gRPC/HTTP2) for obfuscation" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Configure SNI and Path if using advanced transports" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Save configuration with a custom name for later reuse" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Load saved configs from the list and connect instantly" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Create secure SSH tunnels with advanced transport options (WebSocket, gRPC, HTTP/2) and TLS wrapping." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Enter SSH server details (Host, Port, Username)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Choose authentication: Password or SSH Key (browse for private key file)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Select Transport method (Direct/WebSocket/gRPC/HTTP2) for obfuscation" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Configure SNI and Path if using advanced transports" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Save configuration with a custom name for later reuse" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Load saved configs from the list and connect instantly" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Custom VLESS/VMESS Tab Guide -->
-                                    <Border Background="#F0FFF8" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#0F1A18" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1630,20 +2083,20 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="⚡ Custom VLESS/VMESS Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Import or manually configure VLESS/VMESS protocols with Reality, TLS, WebSocket, gRPC support." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Quick Import: Paste vless:// or vmess:// link and click 'Import Link'" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Manual: Fill Address, Port, UUID, and select Protocol (VLESS/VMESS)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Security: Choose none/tls/reality based on your server configuration" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Transport: Select tcp/ws/grpc/h2 and configure Path/Service Name" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Advanced: Set SNI, Fingerprint, ALPN for enhanced security" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Save and connect - View parsed configuration in status panel" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Import or manually configure VLESS/VMESS protocols with Reality, TLS, WebSocket, gRPC support." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Quick Import: Paste vless:// or vmess:// link and click 'Import Link'" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Manual: Fill Address, Port, UUID, and select Protocol (VLESS/VMESS)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Security: Choose none/tls/reality based on your server configuration" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Transport: Select tcp/ws/grpc/h2 and configure Path/Service Name" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Advanced: Set SNI, Fingerprint, ALPN for enhanced security" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Save and connect - View parsed configuration in status panel" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Share VPN Tab Guide -->
-                                    <Border Background="#FFF0F8" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#1A0F18" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1654,20 +2107,20 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🔗 Share VPN Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Share your active VPN connection with other devices on your network with optional URL filtering." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Connect to VPN first (from any tab)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Listen Address: 127.0.0.1 (local only) or 0.0.0.0 (allow LAN devices)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Set Public HTTP Port and SOCKS5 Port (e.g., 8080, 1080)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Choose which proxy type to share (HTTP and/or SOCKS5)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Optional URL Filtering: Enable and add allowed domains to restrict access" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Click 'Start Share' - Use displayed endpoints on mobile/other devices" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Share your active VPN connection with other devices on your network with optional URL filtering." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Connect to VPN first (from any tab)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Listen Address: 127.0.0.1 (local only) or 0.0.0.0 (allow LAN devices)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Set Public HTTP Port and SOCKS5 Port (e.g., 8080, 1080)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Choose which proxy type to share (HTTP and/or SOCKS5)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Optional URL Filtering: Enable and add allowed domains to restrict access" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Click 'Start Share' - Use displayed endpoints on mobile/other devices" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Blocker Tab Guide -->
-                                    <Border Background="#FFF8F0" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#1A170F" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1678,21 +2131,21 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🛡 Blocker Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Block ads, adult content, social media at network level using routing rules and external blocklists." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Category Blocking: Check Ads/18+/Social Media boxes" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. External Lists: Check OISD Small/EasyList/Full Hosts and click 'Update Lists'" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Custom Blocking: Enter domain/URL in Custom Block field and click 'Add'" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Whitelist: Add domains to bypass blocking and route directly (no VPN)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Click 'Apply' to activate all blocking rules" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Manage: Select items from lists and use 'Delete Selected' to remove" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="Note: Blocks at DNS/routing level. Browser extensions may provide additional cosmetic filtering." FontSize="11" Foreground="#777" FontStyle="Italic" Margin="5,8,0,0"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Block ads, adult content, social media at network level using routing rules and external blocklists." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Category Blocking: Check Ads/18+/Social Media boxes" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. External Lists: Check OISD Small/EasyList/Full Hosts and click 'Update Lists'" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Custom Blocking: Enter domain/URL in Custom Block field and click 'Add'" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Whitelist: Add domains to bypass blocking and route directly (no VPN)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Click 'Apply' to activate all blocking rules" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Manage: Select items from lists and use 'Delete Selected' to remove" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="Note: Blocks at DNS/routing level. Browser extensions may provide additional cosmetic filtering." FontSize="11" Foreground="#8B92A5" FontStyle="Italic" Margin="5,8,0,0"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Split Tunnel Tab Guide -->
-                                    <Border Background="#F8F0FF" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#16101A" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1703,21 +2156,21 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🎯 Split Tunnel Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Route only specific applications or SNIs through VPN while others use direct connection." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. App-Based Routing: Enable checkbox and browse for .exe files" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="   • Only selected apps will use VPN, others bypass" FontSize="12" Foreground="#666" Margin="10,0,0,2"/>
-                                            <TextBlock Text="2. Custom SNI Routing: Enable and add specific SNI domains" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="   • Only traffic to these SNIs uses VPN" FontSize="12" Foreground="#666" Margin="10,0,0,2"/>
-                                            <TextBlock Text="3. Click 'Apply Split Tunnel' to activate routing rules" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Use 'Clear All' to remove all split tunnel rules" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Route only specific applications or SNIs through VPN while others use direct connection." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. App-Based Routing: Enable checkbox and browse for .exe files" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="   • Only selected apps will use VPN, others bypass" FontSize="12" Foreground="#8B92A5" Margin="10,0,0,2"/>
+                                            <TextBlock Text="2. Custom SNI Routing: Enable and add specific SNI domains" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="   • Only traffic to these SNIs uses VPN" FontSize="12" Foreground="#8B92A5" Margin="10,0,0,2"/>
+                                            <TextBlock Text="3. Click 'Apply Split Tunnel' to activate routing rules" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Use 'Clear All' to remove all split tunnel rules" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                             <TextBlock Text="Warning: Cannot be used simultaneously with Blocker tab - they conflict." FontSize="11" Foreground="#D13438" FontWeight="SemiBold" Margin="5,8,0,0"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- SNI Check Tab Guide -->
-                                    <Border Background="#F0F8FF" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#0F1A26" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1728,20 +2181,20 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🧪 SNI Check Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Test SNI domains for TLS tunneling suitability - check connectivity, handshake, idle tolerance, redirects." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Enter SNI domain (e.g., cloudflare.com, aka.ms)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Set Port (usually 443 for HTTPS)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Click 'Check' to start comprehensive testing" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Review badges: Conn (connectivity), TLS (handshake), Idle (timeout), Redirect, Speed" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Check Overall Verdict for tunneling suitability recommendation" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="Tip: Good SNIs have green badges and low latency." FontSize="11" Foreground="#777" FontStyle="Italic" Margin="5,8,0,0"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Test SNI domains for TLS tunneling suitability - check connectivity, handshake, idle tolerance, redirects." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Enter SNI domain (e.g., cloudflare.com, aka.ms)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Set Port (usually 443 for HTTPS)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Click 'Check' to start comprehensive testing" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Review badges: Conn (connectivity), TLS (handshake), Idle (timeout), Redirect, Speed" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Check Overall Verdict for tunneling suitability recommendation" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="Tip: Good SNIs have green badges and low latency." FontSize="11" Foreground="#8B92A5" FontStyle="Italic" Margin="5,8,0,0"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Speed Test Tab Guide -->
-                                    <Border Background="#FFF0F8" CornerRadius="8" Padding="20" Margin="0,0,0,15">
+                                    <Border Background="#1A0F1A" CornerRadius="8" Padding="20" Margin="0,0,0,15">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1752,21 +2205,21 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="🚀 Speed Test Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Measure network latency, download/upload speeds, and assess suitability for gaming, streaming, browsing." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Set Ping Host (e.g., 1.1.1.1 for Cloudflare DNS)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Choose Test Duration in seconds (8-15 recommended)" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Click 'Start Test' - measurements begin automatically" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. View real-time results: Ping, Download/Upload throughput" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="5. Check Use Case Ratings: Gaming, Streaming, Browsing quality" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="6. Click 'Stop' to terminate test early if needed" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="Note: If VPN is connected, test automatically uses VPN connection for accurate results." FontSize="11" Foreground="#777" FontStyle="Italic" Margin="5,8,0,0"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Measure network latency, download/upload speeds, and assess suitability for gaming, streaming, browsing." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Set Ping Host (e.g., 1.1.1.1 for Cloudflare DNS)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Choose Test Duration in seconds (8-15 recommended)" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Click 'Start Test' - measurements begin automatically" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. View real-time results: Ping, Download/Upload throughput" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="5. Check Use Case Ratings: Gaming, Streaming, Browsing quality" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="6. Click 'Stop' to terminate test early if needed" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="Note: If VPN is connected, test automatically uses VPN connection for accurate results." FontSize="11" Foreground="#8B92A5" FontStyle="Italic" Margin="5,8,0,0"/>
                                         </StackPanel>
                                     </Border>
 
                                     <!-- Logs Tab Guide -->
-                                    <Border Background="#F8F8F8" CornerRadius="8" Padding="20" Margin="0,0,0,0">
+                                    <Border Background="#14141A" CornerRadius="8" Padding="20" Margin="0,0,0,0">
                                         <StackPanel>
                                             <TextBlock FontSize="18" FontWeight="Bold" Margin="0,0,0,10">
                                                 <TextBlock.Foreground>
@@ -1777,13 +2230,13 @@
                                                 </TextBlock.Foreground>
                                                 <Run Text="📝 Logs Tab"/>
                                             </TextBlock>
-                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Display real-time logs of all application activities, connections, errors, and system events." FontSize="13" Foreground="#555" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,4"/>
-                                            <TextBlock Text="1. Monitor connection status and errors in real-time" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="2. Scroll through logs to troubleshoot connection issues" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="3. Red text indicates errors, black text shows normal operations" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
-                                            <TextBlock Text="4. Use logs for debugging or reporting issues" FontSize="12" Foreground="#555" Margin="5,0,0,2"/>
+                                            <TextBlock Text="What it does:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Display real-time logs of all application activities, connections, errors, and system events." FontSize="13" Foreground="#8B92A5" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                            <TextBlock Text="How to use:" FontSize="13" FontWeight="SemiBold" Foreground="#E8EAED" Margin="0,0,0,4"/>
+                                            <TextBlock Text="1. Monitor connection status and errors in real-time" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="2. Scroll through logs to troubleshoot connection issues" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="3. Red text indicates errors, black text shows normal operations" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
+                                            <TextBlock Text="4. Use logs for debugging or reporting issues" FontSize="12" Foreground="#8B92A5" Margin="5,0,0,2"/>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
@@ -1795,18 +2248,18 @@
                                                FontWeight="Bold" 
                                                Foreground="#007ACC" 
                                                Margin="0,0,0,15"/>
-                                    <Border Background="#F8F9FA" 
+                                    <Border Background="#0F1323" 
                                             CornerRadius="8" 
                                             Padding="25">
                                         <StackPanel>
                                             <TextBlock Text="© 2025 Isuru Sampath. All rights reserved." 
                                                        FontSize="15" 
                                                        FontWeight="SemiBold"
-                                                       Foreground="#333" 
+                                                       Foreground="#E8EAED" 
                                                        Margin="0,0,0,12"/>
                                             <TextBlock Text="This software is provided for educational and personal use. Visit isuruhub.site for more free software and projects." 
                                                        FontSize="14" 
-                                                       Foreground="#666" 
+                                                       Foreground="#8B92A5" 
                                                        TextWrapping="Wrap"/>
                                         </StackPanel>
                                     </Border>
@@ -1830,17 +2283,17 @@
         </TabControl>
 
         <!-- Footer Watermark -->
-        <Border Grid.Row="2" Background="#FFFFFF" Padding="14,10" Margin="0,12,0,0">
+        <Border Grid.Row="2" Background="#0D1224" Padding="14,10" Margin="0,12,0,0">
             <Border.Effect>
-                <DropShadowEffect Color="#000000" Opacity="0.08" ShadowDepth="2" BlurRadius="10" Direction="90"/>
+                <DropShadowEffect Color="#000000" Opacity="0.4" ShadowDepth="2" BlurRadius="10" Direction="90"/>
             </Border.Effect>
             <TextBlock FontSize="14" 
                        HorizontalAlignment="Center" 
                        FontWeight="SemiBold">
                 <TextBlock.Foreground>
                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="#0078D4" Offset="0"/>
-                        <GradientStop Color="#00B7C3" Offset="1"/>
+                        <GradientStop Color="#6C63FF" Offset="0"/>
+                        <GradientStop Color="#00D9FF" Offset="1"/>
                     </LinearGradientBrush>
                 </TextBlock.Foreground>
                 <Run Text="Created by Isuru Sampath"/>

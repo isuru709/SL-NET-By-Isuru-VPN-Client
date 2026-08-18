@@ -9,6 +9,12 @@ Imports System.Linq
 
 Public Class XrayUpdater
 
+    ' Pin to last Xray-core version that supports allowInsecure (v26+ removed it)
+    ' Do NOT update this without verifying allowInsecure compatibility
+    Private Const PINNED_VERSION As String = "v25.12.18"
+    Private Const PINNED_DOWNLOAD_URL As String = "https://github.com/XTLS/Xray-core/releases/download/v25.12.18/Xray-windows-64.zip"
+
+
     Public Class UpdateResult
         Public Property Success As Boolean
         Public Property Version As String
@@ -66,23 +72,17 @@ Public Class XrayUpdater
         Dim xrayExe = Path.Combine(appDir, "xray.exe")
 
         Try
-            log?.Invoke("Checking latest Xray-core release…")
-            Dim latest As ReleaseInfo = Nothing
-            Try
-                latest = Await GetLatestReleaseAsync()
-            Catch ex As Exception
-                log?.Invoke($"GitHub API check failed ({ex.Message}). Falling back to direct download…")
-            End Try
+            ' Use pinned version to avoid breaking changes in newer Xray-core
+            ' (v26+ removed allowInsecure which is needed for servers with expired certs)
+            log?.Invoke($"Using pinned Xray-core version: {PINNED_VERSION}")
+            log?.Invoke("(Newer versions removed allowInsecure support, which breaks many servers)")
+            Dim latest As New ReleaseInfo With {
+                .Version = PINNED_VERSION,
+                .DownloadUrl = PINNED_DOWNLOAD_URL
+            }
 
-            If latest Is Nothing OrElse String.IsNullOrEmpty(latest.DownloadUrl) Then
-                latest = New ReleaseInfo With {
-                    .Version = "latest",
-                    .DownloadUrl = "https://github.com/XTLS/Xray-core/releases/latest/download/Xray-windows-64.zip"
-                }
-            End If
-
-            result.Version = If(String.IsNullOrEmpty(latest.Version), "latest", latest.Version)
-            log?.Invoke($"Latest version: {result.Version}")
+            result.Version = latest.Version
+            log?.Invoke($"Target version: {result.Version}")
 
             ' Prepare temp dir
             Dim tempDir = Path.Combine(Path.GetTempPath(), "VPNClientApp_XrayUpdate")

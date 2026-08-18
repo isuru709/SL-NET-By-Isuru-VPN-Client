@@ -21,6 +21,11 @@ Public Class VPNShareManager
     Private ReadOnly _filterLock As New Object()
     Private _localHttpPort As Integer = 0 ' Track the local HTTP port for filtering
 
+    ' Speed Limiting for shared connections only (not host)
+    Private _downloadSpeedLimitKBps As Integer = 0 ' 0 = unlimited
+    Private _uploadSpeedLimitKBps As Integer = 0 ' 0 = unlimited
+    Private _speedLimitEnabled As Boolean = False
+
     Public Event LogMessage(message As String, isError As Boolean)
     Public Event StatusChanged(isRunning As Boolean, activeConnections As Integer, totalConnections As Integer)
 
@@ -30,11 +35,19 @@ Public Class VPNShareManager
         End Get
     End Property
 
-    Public Async Function StartAsync(listenHost As String, publicHttpPort As Integer, publicSocksPort As Integer, shareHttp As Boolean, shareSocks As Boolean, localHttpPort As Integer, localSocksPort As Integer) As Task(Of Boolean)
+    Public Async Function StartAsync(listenHost As String, publicHttpPort As Integer, publicSocksPort As Integer, shareHttp As Boolean, shareSocks As Boolean, localHttpPort As Integer, localSocksPort As Integer, Optional downloadLimitKBps As Integer = 0, Optional uploadLimitKBps As Integer = 0) As Task(Of Boolean)
         Try
             If _isRunning Then
                 Log("Share VPN already running", True)
                 Return False
+            End If
+
+            ' Set speed limits
+            _downloadSpeedLimitKBps = Math.Max(0, downloadLimitKBps)
+            _uploadSpeedLimitKBps = Math.Max(0, uploadLimitKBps)
+            _speedLimitEnabled = (_downloadSpeedLimitKBps > 0 OrElse _uploadSpeedLimitKBps > 0)
+            If _speedLimitEnabled Then
+                Log($"Speed limits: Download={If(_downloadSpeedLimitKBps > 0, _downloadSpeedLimitKBps.ToString() & " KB/s", "unlimited")}, Upload={If(_uploadSpeedLimitKBps > 0, _uploadSpeedLimitKBps.ToString() & " KB/s", "unlimited")}")
             End If
 
             _cts = New CancellationTokenSource()
@@ -92,8 +105,21 @@ Public Class VPNShareManager
 
                 ' Start connection handling and track the task
                 Dim t = HandleConnectionAsync(client, forwardPort, token)
+                
+                ' Add continuation to remove task when completed (fire-and-forget cleanup)
+                Dim continuationTask = t.ContinueWith(Sub(completedTask)
+                                                          SyncLock _connectionTasks
+                                                              _connectionTasks.Remove(completedTask)
+                                                          End SyncLock
+                                                      End Sub, TaskScheduler.Default)
+                
                 SyncLock _connectionTasks
                     _connectionTasks.Add(t)
+                    
+                    ' Periodically clean up completed tasks to prevent list growth
+                    If _connectionTasks.Count Mod 50 = 0 Then
+                        _connectionTasks.RemoveAll(Function(task) task.IsCompleted)
+                    End If
                 End SyncLock
             Catch ex As ObjectDisposedException
                 Exit While
@@ -106,7 +132,9 @@ Public Class VPNShareManager
     End Function
 
     Private Async Function HandleConnectionAsync(client As TcpClient, forwardPort As Integer, token As CancellationToken) As Task
+        Dim connectionCounted As Boolean = False
         Try
+            connectionCounted = True ' Mark that we have an active connection to decrement later
             Using client
                 client.NoDelay = True
                 Try
@@ -153,9 +181,9 @@ Public Class VPNShareManager
                                     Await outStream.WriteAsync(filterResult.BufferedData, 0, filterResult.BufferedData.Length, token)
                                 End If
                                 
-                                ' Then relay remaining data
-                                Dim t1 = RelayAsync(inStream, outStream, token)
-                                Dim t2 = RelayAsync(outStream, inStream, token)
+                                ' Then relay remaining data with speed limiting
+                                Dim t1 = If(_speedLimitEnabled, RelayAsyncThrottled(inStream, outStream, token, False), RelayAsync(inStream, outStream, token)) ' Client->upstream = upload
+                                Dim t2 = If(_speedLimitEnabled, RelayAsyncThrottled(outStream, inStream, token, True), RelayAsync(outStream, inStream, token)) ' Upstream->client = download
                                 Await Task.WhenAny(t1, t2)
                             End Using
                         End Using
@@ -174,8 +202,9 @@ Public Class VPNShareManager
 
                         Using inStream = client.GetStream()
                             Using outStream = upstream.GetStream()
-                                Dim t1 = RelayAsync(inStream, outStream, token)
-                                Dim t2 = RelayAsync(outStream, inStream, token)
+                                ' Use throttled relay for shared connections
+                                Dim t1 = If(_speedLimitEnabled, RelayAsyncThrottled(inStream, outStream, token, False), RelayAsync(inStream, outStream, token)) ' Client->upstream = upload
+                                Dim t2 = If(_speedLimitEnabled, RelayAsyncThrottled(outStream, inStream, token, True), RelayAsync(outStream, inStream, token)) ' Upstream->client = download
                                 Await Task.WhenAny(t1, t2)
                             End Using
                         End Using
@@ -187,8 +216,11 @@ Public Class VPNShareManager
                 Log($"Forward error: {ex.Message}")
             End If
         Finally
-            Threading.Interlocked.Decrement(_activeConnections)
-            RaiseEvent StatusChanged(_isRunning, _activeConnections, _totalConnections)
+            ' Only decrement if we successfully counted this connection
+            If connectionCounted Then
+                Threading.Interlocked.Decrement(_activeConnections)
+                RaiseEvent StatusChanged(_isRunning, _activeConnections, _totalConnections)
+            End If
         End Try
     End Function
 
@@ -296,6 +328,21 @@ Public Class VPNShareManager
         End SyncLock
     End Sub
 
+    ''' <summary>
+    ''' Update speed limits for shared VPN connections (can be applied while sharing is active)
+    ''' </summary>
+    Public Sub SetSpeedLimit(downloadLimitKBps As Integer, uploadLimitKBps As Integer, enabled As Boolean)
+        _downloadSpeedLimitKBps = Math.Max(0, downloadLimitKBps)
+        _uploadSpeedLimitKBps = Math.Max(0, uploadLimitKBps)
+        _speedLimitEnabled = enabled AndAlso (_downloadSpeedLimitKBps > 0 OrElse _uploadSpeedLimitKBps > 0)
+        
+        If _speedLimitEnabled Then
+            Log($"Speed limits updated: Download={If(_downloadSpeedLimitKBps > 0, _downloadSpeedLimitKBps.ToString() & " KB/s", "unlimited")}, Upload={If(_uploadSpeedLimitKBps > 0, _uploadSpeedLimitKBps.ToString() & " KB/s", "unlimited")}")
+        Else
+            Log("Speed limits disabled")
+        End If
+    End Sub
+
     Private Async Function RelayAsync(src As Stream, dst As Stream, token As CancellationToken) As Task
         Dim buffer(65535) As Byte
         Try
@@ -306,6 +353,63 @@ Public Class VPNShareManager
                 ' Flushing each write can hurt performance; let stream coalesce when possible
             End While
         Catch
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Relay with speed throttling (for client->upstream direction = upload, upstream->client = download)
+    ''' Uses token bucket algorithm for smooth rate limiting
+    ''' </summary>
+    Private Async Function RelayAsyncThrottled(src As Stream, dst As Stream, token As CancellationToken, isDownload As Boolean) As Task
+        Dim limitKBps = If(isDownload, _downloadSpeedLimitKBps, _uploadSpeedLimitKBps)
+        
+        Try
+            If limitKBps <= 0 Then
+                ' No limit, use standard relay
+                Await RelayAsync(src, dst, token)
+                Return
+            End If
+
+            ' Log that throttling is active
+            Log($"Throttling {If(isDownload, "download", "upload")} at {limitKBps} KB/s")
+
+            ' Convert KB/s to bytes per second
+            Dim limitBytesPerSecond As Double = limitKBps * 1024.0
+            Dim buffer(8192) As Byte ' 8KB buffer
+            Dim sw = Stopwatch.StartNew()
+            Dim lastCheckTime As Double = 0
+            
+            While Not token.IsCancellationRequested
+                Dim read = Await src.ReadAsync(buffer, 0, buffer.Length, token)
+                If read = 0 Then Exit While
+                
+                ' Write the data
+                Await dst.WriteAsync(buffer, 0, read, token)
+                
+                ' Calculate delay needed to maintain target rate
+                Dim currentTime = sw.Elapsed.TotalSeconds
+                Dim timeSinceLastCheck = currentTime - lastCheckTime
+                
+                ' Calculate how long this transfer should have taken at target rate
+                Dim targetDuration = read / limitBytesPerSecond
+                
+                ' If we transferred faster than target, delay
+                If timeSinceLastCheck < targetDuration Then
+                    Dim delaySeconds = targetDuration - timeSinceLastCheck
+                    Dim delayMs = CInt(delaySeconds * 1000)
+                    If delayMs > 0 AndAlso delayMs < 5000 Then ' Cap at 5 seconds
+                        Await Task.Delay(delayMs, token)
+                    End If
+                End If
+                
+                ' Update last check time
+                lastCheckTime = sw.Elapsed.TotalSeconds
+            End While
+        Catch ex As OperationCanceledException
+            ' Normal cancellation
+        Catch ex As Exception
+            ' Log other exceptions but don't crash
+            Log($"Throttled relay error: {ex.Message}", True)
         End Try
     End Function
 

@@ -1,4 +1,4 @@
-﻿Imports System.Diagnostics
+Imports System.Diagnostics
 Imports System.IO
 Imports System.Net
 Imports System.Net.NetworkInformation
@@ -52,6 +52,8 @@ Public Class VPNConnectionManager
     Private _blockerSettings As New BlockerSettings()
     Private _externalBlockDomains As List(Of String) = New List(Of String)()
     Private _splitTunnelSettings As New SplitTunnelSettings()
+    Private _tunManager As TunAdapterManager
+    Private _vpnServerHost As String = ""
     Public Property EnableLowLatencySSHMode As Boolean = False
     Public Event LogMessage(message As String, isError As Boolean)
 
@@ -81,6 +83,10 @@ Public Class VPNConnectionManager
                 _xrayCorePath = altPath
             End If
         End If
+
+        ' Initialize TUN adapter manager
+        _tunManager = New TunAdapterManager()
+        AddHandler _tunManager.LogMessage, Sub(msg, isErr) Log(msg, isErr)
     End Sub
 
     Public Sub UpdateBlockerSettings(settings As BlockerSettings)
@@ -474,6 +480,7 @@ Public Class VPNConnectionManager
             End If
 
             _currentConfig = config
+            _vpnServerHost = config.Host
 
             ' Track all ports that will be used to avoid conflicts
             Dim reservedPorts As New List(Of Integer)
@@ -649,8 +656,44 @@ Public Class VPNConnectionManager
         Return Await Task.Run(Function()
                                   Try
                                       Dim methods As New List(Of AuthenticationMethod)
-                                      If Not String.IsNullOrEmpty(config.Password) Then
+                                      
+                                      ' Add authentication methods based on configuration
+                                      If config.UseKeyAuth Then
+                                          ' Private key authentication
+                                          If String.IsNullOrEmpty(config.PrivateKeyPath) OrElse Not IO.File.Exists(config.PrivateKeyPath) Then
+                                              Log("SSH private key file not found", True)
+                                              Return False
+                                          End If
+                                          
+                                          Try
+                                              Dim keyFile As PrivateKeyFile
+                                              If Not String.IsNullOrEmpty(config.Passphrase) Then
+                                                  ' Encrypted key with passphrase
+                                                  keyFile = New PrivateKeyFile(config.PrivateKeyPath, config.Passphrase)
+                                                  Log("Using encrypted private key with passphrase")
+                                              Else
+                                                  ' Unencrypted key
+                                                  keyFile = New PrivateKeyFile(config.PrivateKeyPath)
+                                                  Log("Using unencrypted private key")
+                                              End If
+                                              methods.Add(New PrivateKeyAuthenticationMethod(config.Username, keyFile))
+                                          Catch ex As Exception
+                                              Log($"Failed to load private key: {ex.Message}", True)
+                                              Return False
+                                          End Try
+                                      Else
+                                          ' Password authentication
+                                          If String.IsNullOrEmpty(config.Password) Then
+                                              Log("SSH password is empty", True)
+                                              Return False
+                                          End If
                                           methods.Add(New PasswordAuthenticationMethod(config.Username, config.Password))
+                                          Log("Using password authentication")
+                                      End If
+
+                                      If methods.Count = 0 Then
+                                          Log("No authentication method configured", True)
+                                          Return False
                                       End If
 
                                       Dim connInfo As New ConnectionInfo(targetHost, targetPort, config.Username, methods.ToArray()) With {
@@ -662,18 +705,28 @@ Public Class VPNConnectionManager
                                       }
                                       _sshClient.ConnectionInfo.RetryAttempts = 1
 
+                                      Log($"Connecting to SSH server {targetHost}:{targetPort} as {config.Username}...")
                                       _sshClient.Connect()
+                                      
                                       If Not _sshClient.IsConnected Then
                                           Log("SSH connection failed (not connected)", True)
                                           Return False
                                       End If
 
+                                      Log("SSH authentication successful")
+                                      
                                       _sshDynamic = New ForwardedPortDynamic("127.0.0.1", CUInt(config.LocalPort))
                                       _sshClient.AddForwardedPort(_sshDynamic)
                                       _sshDynamic.Start()
 
                                       Log($"Optimized SSH dynamic SOCKS started on 127.0.0.1:{config.LocalPort}")
                                       Return True
+                                  Catch authEx As Renci.SshNet.Common.SshAuthenticationException
+                                      Log($"SSH authentication failed: {authEx.Message}. Check username/password or private key.", True)
+                                      Return False
+                                  Catch connEx As Renci.SshNet.Common.SshConnectionException
+                                      Log($"SSH connection error: {connEx.Message}. Check host/port and network.", True)
+                                      Return False
                                   Catch ex As Exception
                                       Log($"SSH.NET tunnel start failed: {ex.Message}", True)
                                       Return False
@@ -690,60 +743,60 @@ Public Class VPNConnectionManager
                 BackupProxySettings()
             End If
 
+            ' Handle TUN modes separately (no registry proxy needed)
+            If enable AndAlso (proxyMode.Equals("TUN1", StringComparison.OrdinalIgnoreCase) OrElse
+                               proxyMode.Equals("TUN2", StringComparison.OrdinalIgnoreCase)) Then
+                Dim tunStarted As Boolean = False
+                If proxyMode.Equals("TUN1", StringComparison.OrdinalIgnoreCase) Then
+                    tunStarted = _tunManager.StartTun1(_socksPort, _vpnServerHost)
+                Else
+                    tunStarted = _tunManager.StartTun2(_socksPort, _vpnServerHost)
+                End If
+
+                If Not tunStarted Then
+                    Log($"TUN mode {proxyMode} failed to start.", True)
+                    _tunManager.StopTun()
+                    Return
+                Else
+                    Log($"TUN mode {proxyMode} active")
+                    Return
+                End If
+            End If
+
+            ' Stop TUN if switching away from TUN mode
+            If Not enable AndAlso _tunManager IsNot Nothing AndAlso _tunManager.IsRunning Then
+                _tunManager.StopTun()
+            End If
+
             Dim registryKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
             Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey, True)
                 If key IsNot Nothing Then
                     If enable Then
                         Select Case proxyMode.ToLower()
                             Case "system"
-                                ' System Proxy: Use HTTP proxy for system-wide applications
                                 key.SetValue("ProxyEnable", 1, Microsoft.Win32.RegistryValueKind.DWord)
                                 key.SetValue("ProxyServer", $"127.0.0.1:{_httpPort}", Microsoft.Win32.RegistryValueKind.String)
                                 key.SetValue("ProxyOverride", "<local>", Microsoft.Win32.RegistryValueKind.String)
                                 Log($"System proxy enabled: 127.0.0.1:{_httpPort}")
 
                             Case "global"
-                                ' Global Proxy: Route everything through proxy (no exceptions)
                                 key.SetValue("ProxyEnable", 1, Microsoft.Win32.RegistryValueKind.DWord)
                                 key.SetValue("ProxyServer", $"http=127.0.0.1:{_httpPort};https=127.0.0.1:{_httpPort};socks=127.0.0.1:{_socksPort}", Microsoft.Win32.RegistryValueKind.String)
-                                key.DeleteValue("ProxyOverride", False) ' No bypass list
-                                Log($"Global proxy enabled: HTTP={_httpPort}, HTTPS={_httpPort}, SOCKS={_socksPort}")
-
-                            Case "pac"
-                                ' PAC Script: Use automatic configuration (generate simple PAC)
-                                Dim pacUrl = GeneratePACScript()
-                                key.SetValue("AutoConfigURL", pacUrl, Microsoft.Win32.RegistryValueKind.String)
-                                key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord) ' Disable manual proxy when using PAC
-                                Log($"PAC script proxy enabled: {pacUrl}")
-
-                            Case "manual"
-                                ' Manual Proxy: User can configure apps individually (just enable proxy without forcing)
-                                key.SetValue("ProxyEnable", 1, Microsoft.Win32.RegistryValueKind.DWord)
-                                key.SetValue("ProxyServer", $"http=127.0.0.1:{_httpPort};https=127.0.0.1:{_httpPort};socks=127.0.0.1:{_socksPort}", Microsoft.Win32.RegistryValueKind.String)
-                                key.SetValue("ProxyOverride", "<local>;*.local;localhost;127.*;10.*;172.16.*;192.168.*", Microsoft.Win32.RegistryValueKind.String)
-                                Log($"Manual proxy enabled: HTTP={_httpPort}, HTTPS={_httpPort}, SOCKS={_socksPort}")
-
-                            Case "none"
-                                ' No Proxy: Don't configure system proxy (VPN runs but apps must be configured manually)
-                                Log("Proxy mode: None (VPN active but no system proxy configured)")
-                                ' Don't set any proxy settings
-                                Return
+                                key.DeleteValue("ProxyOverride", False)
+                                Log($"Global proxy enabled: HTTP={_httpPort}, SOCKS={_socksPort}")
 
                             Case Else
-                                ' Default to System mode
                                 key.SetValue("ProxyEnable", 1, Microsoft.Win32.RegistryValueKind.DWord)
                                 key.SetValue("ProxyServer", $"127.0.0.1:{_httpPort}", Microsoft.Win32.RegistryValueKind.String)
                                 key.SetValue("ProxyOverride", "<local>", Microsoft.Win32.RegistryValueKind.String)
                                 Log($"System proxy enabled (default): 127.0.0.1:{_httpPort}")
                         End Select
                     Else
-                        ' Disable proxy and restore previous settings
                         RestoreProxySettings()
                     End If
                 End If
             End Using
 
-            ' Notify Windows of the proxy change
             InternetSetOption(IntPtr.Zero, INTERNET_OPTION_SETTINGS_CHANGED, IntPtr.Zero, 0)
             InternetSetOption(IntPtr.Zero, INTERNET_OPTION_REFRESH, IntPtr.Zero, 0)
         Catch ex As Exception
@@ -796,76 +849,63 @@ Public Class VPNConnectionManager
     ''' Restore previous proxy settings
     ''' </summary>
     Private Sub RestoreProxySettings()
+        ' Always force proxy OFF and AutoDetect ON instead of restoring backup
+        ' This prevents "Use a proxy server" from staying ON after disconnect
+        ForceCleanProxyState()
+    End Sub
+
+    ''' <summary>
+    ''' Force Windows proxy settings to clean defaults:
+    ''' - "Use a proxy server" = OFF
+    ''' - "Automatically detect settings" = ON
+    ''' - Remove ProxyServer, ProxyOverride, AutoConfigURL values
+    ''' Call this on disconnect and app shutdown to guarantee clean state.
+    ''' </summary>
+    Public Sub ForceCleanProxyState()
         Try
-            If _previousProxySettings Is Nothing Then
-                ' No backup, just disable proxy
-                Dim registryKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-                Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey, True)
-                    If key IsNot Nothing Then
-                        key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord)
-                        key.DeleteValue("ProxyServer", False)
-                        key.DeleteValue("ProxyOverride", False)
-                        key.DeleteValue("AutoConfigURL", False)
-                    End If
-                End Using
-                Log("Proxy disabled (no previous settings to restore)")
-                Return
-            End If
-
-            Dim registryKey2 = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-            Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey2, True)
+            Dim registryKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+            Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryKey, True)
                 If key IsNot Nothing Then
-                    ' Restore ProxyEnable
-                    If _previousProxySettings.ContainsKey("ProxyEnable") Then
-                        Dim proxyEnable = CInt(_previousProxySettings("ProxyEnable"))
-                        key.SetValue("ProxyEnable", proxyEnable, Microsoft.Win32.RegistryValueKind.DWord)
-                    Else
-                        key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord)
-                    End If
-
-                    ' Restore ProxyServer
-                    If _previousProxySettings.ContainsKey("ProxyServer") Then
-                        Dim proxyServer = _previousProxySettings("ProxyServer").ToString()
-                        If Not String.IsNullOrEmpty(proxyServer) Then
-                            key.SetValue("ProxyServer", proxyServer, Microsoft.Win32.RegistryValueKind.String)
-                        Else
-                            key.DeleteValue("ProxyServer", False)
-                        End If
-                    Else
-                        key.DeleteValue("ProxyServer", False)
-                    End If
-
-                    ' Restore ProxyOverride
-                    If _previousProxySettings.ContainsKey("ProxyOverride") Then
-                        Dim proxyOverride = _previousProxySettings("ProxyOverride").ToString()
-                        If Not String.IsNullOrEmpty(proxyOverride) Then
-                            key.SetValue("ProxyOverride", proxyOverride, Microsoft.Win32.RegistryValueKind.String)
-                        Else
-                            key.DeleteValue("ProxyOverride", False)
-                        End If
-                    Else
-                        key.DeleteValue("ProxyOverride", False)
-                    End If
-
-                    ' Restore AutoConfigURL
-                    If _previousProxySettings.ContainsKey("AutoConfigURL") Then
-                        Dim autoConfigURL = _previousProxySettings("AutoConfigURL").ToString()
-                        If Not String.IsNullOrEmpty(autoConfigURL) Then
-                            key.SetValue("AutoConfigURL", autoConfigURL, Microsoft.Win32.RegistryValueKind.String)
-                        Else
-                            key.DeleteValue("AutoConfigURL", False)
-                        End If
-                    Else
-                        key.DeleteValue("AutoConfigURL", False)
-                    End If
-
-                    Log("Previous proxy settings restored")
+                    ' Force "Use a proxy server" OFF
+                    key.SetValue("ProxyEnable", 0, Microsoft.Win32.RegistryValueKind.DWord)
+                    ' Remove proxy server address
+                    key.DeleteValue("ProxyServer", False)
+                    ' Remove proxy bypass list
+                    key.DeleteValue("ProxyOverride", False)
+                    ' Remove auto-config script URL
+                    key.DeleteValue("AutoConfigURL", False)
                 End If
             End Using
 
+            ' Also force "Automatically detect settings" ON via Connections registry
+            Dim connKey = "Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections"
+            Using key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(connKey, True)
+                If key IsNot Nothing Then
+                    Dim settings = TryCast(key.GetValue("DefaultConnectionSettings"), Byte())
+                    If settings IsNot Nothing AndAlso settings.Length >= 9 Then
+                        ' Byte index 8 controls proxy flags:
+                        ' Bit 0x01 = unused, Bit 0x02 = unused,
+                        ' Bit 0x04 = use manual proxy, Bit 0x08 = auto-detect
+                        ' We want: auto-detect ON (0x08), manual proxy OFF (clear 0x04)
+                        settings(8) = CByte((settings(8) Or &H8) And (Not CByte(&H4)))
+                        ' Increment the revision counter (bytes 4-7 as Int32) so Windows picks up the change
+                        Dim revision = BitConverter.ToInt32(settings, 4)
+                        revision += 1
+                        Dim revBytes = BitConverter.GetBytes(revision)
+                        Array.Copy(revBytes, 0, settings, 4, 4)
+                        key.SetValue("DefaultConnectionSettings", settings, Microsoft.Win32.RegistryValueKind.Binary)
+                    End If
+                End If
+            End Using
+
+            ' Notify Windows that proxy settings have changed
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_SETTINGS_CHANGED, IntPtr.Zero, 0)
+            InternetSetOption(IntPtr.Zero, INTERNET_OPTION_REFRESH, IntPtr.Zero, 0)
+
             _previousProxySettings = Nothing
+            Log("Proxy forced to clean state: proxy OFF, auto-detect ON")
         Catch ex As Exception
-            Log($"Failed to restore proxy settings: {ex.Message}", True)
+            Log($"Failed to force clean proxy state: {ex.Message}", True)
         End Try
     End Sub
 
@@ -931,12 +971,22 @@ Public Class VPNConnectionManager
 
             AddHandler _xrayProcess.OutputDataReceived, Sub(s, e)
                                                             If Not String.IsNullOrEmpty(e.Data) Then
+                                                                ' In TUN modes, skip noisy connection logs to prevent UI freeze
+                                                                If (_currentProxyMode = "TUN1" OrElse _currentProxyMode = "TUN2") AndAlso
+                                                                   (e.Data.Contains("accepted") OrElse e.Data.Contains(">>")) Then
+                                                                    Return
+                                                                End If
                                                                 Log($"Xray: {e.Data}")
                                                             End If
                                                         End Sub
 
             AddHandler _xrayProcess.ErrorDataReceived, Sub(s, e)
                                                            If Not String.IsNullOrEmpty(e.Data) Then
+                                                               ' In TUN modes, only show actual errors
+                                                               If (_currentProxyMode = "TUN1" OrElse _currentProxyMode = "TUN2") AndAlso
+                                                                  Not e.Data.Contains("[Error]") AndAlso Not e.Data.Contains("[Warning]") Then
+                                                                   Return
+                                                               End If
                                                                Log($"Xray: {e.Data}", True)
                                                            End If
                                                        End Sub
@@ -1019,12 +1069,16 @@ Public Class VPNConnectionManager
         Try
             Log("Disconnecting VPN...")
 
+            ' Stop TUN mode if active
+            If _tunManager IsNot Nothing AndAlso _tunManager.IsRunning Then
+                _tunManager.StopTun()
+            End If
+
             SetSystemProxy(False)
 
             Try
                 If _sshDynamic IsNot Nothing AndAlso _sshDynamic.IsStarted Then
                     _sshDynamic.Stop()
-                    Log("SSH dynamic port stopped")
                 End If
             Catch
             End Try
@@ -1032,7 +1086,6 @@ Public Class VPNConnectionManager
             Try
                 If _sshClient IsNot Nothing AndAlso _sshClient.IsConnected Then
                     _sshClient.Disconnect()
-                    Log("SSH client disconnected")
                 End If
             Catch
             End Try
@@ -1050,7 +1103,6 @@ Public Class VPNConnectionManager
                 _sshProcess.WaitForExit(2000)
                 _sshProcess.Dispose()
                 _sshProcess = Nothing
-                Log("SSH process closed")
             End If
 
             If _xrayProcess IsNot Nothing AndAlso Not _xrayProcess.HasExited Then
@@ -1058,7 +1110,6 @@ Public Class VPNConnectionManager
                 _xrayProcess.WaitForExit(2000)
                 _xrayProcess.Dispose()
                 _xrayProcess = Nothing
-                Log("Xray-core stopped")
             End If
 
             Dim processes = Process.GetProcessesByName("xray")
@@ -1073,10 +1124,24 @@ Public Class VPNConnectionManager
             _socksPort = 0
             _httpPort = 0
             _tlsLocalPort = 0
+            _vpnServerHost = ""
             Log("Disconnection complete")
         Catch ex As Exception
             Log($"Disconnect error: {ex.Message}", True)
             Throw New Exception($"Disconnect failed: {ex.Message}")
+        End Try
+    End Sub
+
+    ''' <summary>
+    ''' Full cleanup including TUN adapter deletion (call on app exit only)
+    ''' </summary>
+    Public Sub CleanupAdapter()
+        Try
+            If _tunManager IsNot Nothing Then
+                _tunManager.CleanupAdapter()
+            End If
+        Catch ex As Exception
+            Log($"CleanupAdapter error: {ex.Message}", True)
         End Try
     End Sub
 
@@ -1141,6 +1206,7 @@ Public Class VPNConnectionManager
             End If
 
             _currentConfig = config
+            _vpnServerHost = config.Host
 
             Log("Allocating proxy ports...")
             AllocatePorts()
@@ -1160,7 +1226,11 @@ Public Class VPNConnectionManager
             If started Then
                 _isConnected = True
                 SetSystemProxy(True, proxyMode)
-                Log($"System proxy enabled (mode: {proxyMode})")
+                If proxyMode.StartsWith("TUN", StringComparison.OrdinalIgnoreCase) Then
+                    Log($"TUN proxy mode: {proxyMode}")
+                Else
+                    Log($"System proxy enabled (mode: {proxyMode})")
+                End If
                 Log($"=== CONNECTION SUCCESSFUL ===")
                 Log($"HTTP Proxy: 127.0.0.1:{_httpPort}")
                 Log($"SOCKS5 Proxy: 127.0.0.1:{_socksPort}")
@@ -1379,8 +1449,8 @@ Public Class VPNConnectionManager
                 })
             End If
 
-            ' Append external block domains only when enabled in settings (any list)
-            If _blockerSettings IsNot Nothing AndAlso (_blockerSettings.UseOisdSmall OrElse _blockerSettings.UseOisdMedium OrElse _blockerSettings.UseOisdFull) AndAlso _externalBlockDomains IsNot Nothing AndAlso _externalBlockDomains.Count > 0 Then
+            ' Append external block domains when ads blocking is enabled AND external lists are loaded
+            If _blockerSettings IsNot Nothing AndAlso _blockerSettings.AdsEnabled AndAlso _externalBlockDomains IsNot Nothing AndAlso _externalBlockDomains.Count > 0 Then
                 ' Filter out YouTube core and user whitelist from external domains to avoid breakage
                 Dim ytCore = New HashSet(Of String)(GetYouTubeCoreAllowDomains().Select(Function(s) s.Replace("domain:", "")), StringComparer.OrdinalIgnoreCase)
                 Dim userWhite = New HashSet(Of String)((If(_blockerSettings.WhitelistDomains, New List(Of String)())).Select(Function(s) NormalizeDomain(s)), StringComparer.OrdinalIgnoreCase)

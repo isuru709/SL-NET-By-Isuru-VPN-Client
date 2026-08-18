@@ -1,0 +1,50 @@
+# Build workflow for Isuru VC — a .NET Framework 4.7.2 VB.NET WPF application.
+# Builds the solution with MSBuild on a Windows runner.
+
+name: .NET Framework Desktop
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: VPNClientApp.sln
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Add MSBuild to the PATH
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    # Setup NuGet CLI for packages.config restore
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v2
+
+    # Restore NuGet packages (packages.config style)
+    - name: Restore NuGet packages
+      run: nuget restore "${{ env.Solution_Name }}"
+
+    # Build the solution
+    - name: Build
+      run: msbuild "${{ env.Solution_Name }}" /p:Configuration=${{ matrix.configuration }} /p:Platform="Any CPU" /m
+
+    # Upload build output
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: SL-NET-${{ matrix.configuration }}
+        path: VPNClientApp\bin\${{ matrix.configuration }}\

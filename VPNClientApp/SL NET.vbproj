@@ -14,7 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Image_fx (14)-modified.ico" />
+    <Content Include="Image_fx (14)-modified.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +39,11 @@
     <PackageReference Include="Renci.SshNet.Async" Version="1.4.0" />
     <PackageReference Include="SSH.NET" Version="2025.1.0" />
     <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
   </ItemGroup>
 
   <ItemGroup>
